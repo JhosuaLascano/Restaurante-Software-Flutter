@@ -18,8 +18,11 @@
                 </div>
                 <div class="selector-box">
                     <span style="display: flex; align-items: center; gap: 5px;">
-                        <i class="fas fa-circle"
-                            style="font-size: 0.6rem; color: {% if mesa.estado == 'libre' %}#10B981{% else %}#EF4444{% endif %};"></i>
+                        {% if mesa.estado == 'libre' %}
+                        <i class="fas fa-circle" style="font-size: 0.6rem; color: #10B981;"></i>
+                        {% else %}
+                        <i class="fas fa-circle" style="font-size: 0.6rem; color: #EF4444;"></i>
+                        {% endif %}
                         {{ mesa.get_estado_display }}
                     </span>
                 </div>

@@ -55,12 +55,18 @@
                         </td>
                         <td>{{ u.email }}</td>
                         <td>
-                            <span style="padding: 5px 10px; border-radius: 15px; font-size: 0.8em; 
-                                {% if u.rol == 'admin' %} background: #ffebee; color: #c62828; 
-                                {% elif u.rol == 'gerente' %} background: #e3f2fd; color: #1565c0;
-                                {% else %} background: #fff3e0; color: #ef6c00; {% endif %}">
-                                {{ u.get_rol_display }}
-                            </span>
+                            {% if u.rol == 'admin' %}
+                            <span
+                                style="padding: 5px 10px; border-radius: 15px; font-size: 0.8em; background: #ffebee; color: #c62828;">
+                                {% elif u.rol == 'gerente' %}
+                                <span
+                                    style="padding: 5px 10px; border-radius: 15px; font-size: 0.8em; background: #e3f2fd; color: #1565c0;">
+                                    {% else %}
+                                    <span
+                                        style="padding: 5px 10px; border-radius: 15px; font-size: 0.8em; background: #fff3e0; color: #ef6c00;">
+                                        {% endif %}
+                                        {{ u.get_rol_display }}
+                                    </span>
                         </td>
                         <td>
                             {% if u.last_activity and u.last_activity >= time_threshold %}
