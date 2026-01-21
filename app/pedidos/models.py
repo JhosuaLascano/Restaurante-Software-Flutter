@@ -63,6 +63,7 @@ class Pedido(models.Model):
     mesero = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     cliente = models.ForeignKey('clientes.Cliente', on_delete=models.SET_NULL, null=True, blank=True)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='borrador')
+    observacion = models.TextField(blank=True, null=True, verbose_name="Notas para Cocina")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

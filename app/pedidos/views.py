@@ -108,6 +108,11 @@ def confirmar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, pk=pedido_id)
     
     if pedido.items.exists():
+        if request.method == 'POST':
+            nota = request.POST.get('nota_cocina')
+            if nota:
+                pedido.observacion = nota
+
         pedido.estado = 'confirmado'
         pedido.save()
         

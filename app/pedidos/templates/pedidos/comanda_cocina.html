@@ -137,6 +137,13 @@
             {% endfor %}
         </table>
 
+        {% if pedido.observacion %}
+        <div
+            style="margin: 15px 0; border: 2px dashed black; padding: 10px; font-weight: bold; font-size: 1rem; text-align: left;">
+            NOTA: {{ pedido.observacion }}
+        </div>
+        {% endif %}
+
         <div class="footer">
             Entrada: {{ pedido.created_at|date:"d/m/Y H:i" }}
         </div>
