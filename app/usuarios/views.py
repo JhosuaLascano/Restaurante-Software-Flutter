@@ -244,8 +244,11 @@ def gestion_inventario(request):
     # Traemos todos los insumos ordenados por nombre
     insumos = Insumo.objects.all().order_by('nombre')
     
-    # Calcular Valor Total del Inventario
-    valor_total_inventario = sum(i.stock_actual * i.costo_unitario for i in insumos)
+    # Calcular Valor Total del Inventario y por Ítem
+    valor_total_inventario = 0
+    for i in insumos:
+        i.valor_total = i.stock_actual * i.costo_unitario
+        valor_total_inventario += i.valor_total
     
     return render(request, 'usuarios/gestion_inventario.html', {
         'insumos': insumos, 

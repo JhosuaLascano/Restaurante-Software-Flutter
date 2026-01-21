@@ -27,15 +27,22 @@
             <i class="fas fa-utensils"></i> El Rincón...
         </div>
         <div class="nav-links">
-            <!-- Si es mesero, mostrar panel mesero. Si es gerente, mostrar dashboard -->
+            <!-- Si es gerente/admin, MOSTRAR TODO EL MENU DE GERENCIA -->
             {% if user.rol == 'gerente' or user.rol == 'admin' %}
             <a href="{% url 'usuarios:dashboard_gerente' %}"><i class="fas fa-home"></i> Dashboard</a>
-            {% else %}
-            <a href="{% url 'usuarios:dashboard_mesero' %}"><i class="fas fa-home"></i> Dashboard</a>
-            {% endif %}
+            <a href="{% url 'usuarios:gestion_menu' %}"><i class="fas fa-hamburger"></i> Menú</a>
+            <a href="{% url 'usuarios:gestion_inventario' %}"><i class="fas fa-boxes"></i> Inventario</a>
+            <a href="{% url 'usuarios:reportes_ventas' %}"><i class="fas fa-chart-line"></i> Reportes</a>
+            <a href="{% url 'usuarios:lista_usuarios' %}"><i class="fas fa-users"></i> Personal</a>
+            <a href="#" class="active"><i class="fas fa-cash-register"></i> Caja</a>
+            <a href="{% url 'usuarios:logout' %}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
 
+            {% else %}
+            <!-- MENÚ DE MESERO -->
+            <a href="{% url 'usuarios:dashboard_mesero' %}"><i class="fas fa-home"></i> Dashboard</a>
             <a href="#" class="active"><i class="fas fa-cash-register"></i> Caja</a>
             <a href="{% url 'usuarios:logout' %}"><i class="fas fa-sign-out-alt"></i> Salir</a>
+            {% endif %}
         </div>
     </nav>
 

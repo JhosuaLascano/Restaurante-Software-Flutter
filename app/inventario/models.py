@@ -28,7 +28,9 @@ class Insumo(models.Model):
     stock_minimo = models.DecimalField(max_digits=10, decimal_places=3, default=5)
 
     def __str__(self):
-        return f"{self.nombre} ({self.stock_actual} {self.unidad_medida})"
+        # Formatear el stock para evitar confusiones (eliminar ceros decimales si es entero)
+        stock_fmt = f"{self.stock_actual:g}" 
+        return f"{self.nombre} ({stock_fmt} {self.get_unidad_medida_display()})"
 
 # 3. KARDEX (Historial)
 class MovimientoKardex(models.Model):

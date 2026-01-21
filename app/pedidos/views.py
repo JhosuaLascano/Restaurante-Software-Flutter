@@ -334,9 +334,18 @@ def gestion_receta(request, producto_id):
             nueva_receta = form.save(commit=False)
             nueva_receta.producto = producto
             nueva_receta.save()
+            
+            # REFRESCAR LA LISTA DE RECETAS
+            recetas = producto.receta.all()
+            
             # Recargamos el mismo modal con los datos actualizados
             return render(request, 'pedidos/modals/gestion_receta.html', {
                 'producto': producto, 'recetas': recetas, 'form': RecetaForm()
+            })
+        else:
+            # Si hay error, mostramos el formulario con errores
+            return render(request, 'pedidos/modals/gestion_receta.html', {
+                'producto': producto, 'recetas': recetas, 'form': form
             })
     else:
         form = RecetaForm()

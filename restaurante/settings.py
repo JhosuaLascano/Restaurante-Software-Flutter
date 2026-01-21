@@ -143,6 +143,13 @@ USE_I18N = True
 
 USE_TZ = True
 
+# --- FORMATO REGIONAL (ESPAÑOL) ---
+USE_L10N = True # Localización automática
+USE_THOUSAND_SEPARATOR = True # Separador de miles (puntos)
+DECIMAL_SEPARATOR = ',' # Separador decimal (coma)
+THOUSAND_SEPARATOR = '.' # Separador miles (punto)
+
+
 # --- CONFIGURACIÓN DE SEGURIDAD DE SESIONES ---
 # Cierra la sesión al cerrar el navegador
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -266,9 +273,3 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Cierra la sesión si el navegador se cierra
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
-# Tiempo de vida de la cookie (en segundos). 900 seg = 15 minutos.
-SESSION_COOKIE_AGE = 900
-
-# Para que el contador se reinicie cada vez que el usuario hace clic en algo
-SESSION_SAVE_EVERY_REQUEST = True

@@ -25,5 +25,5 @@ class RecetaForm(forms.ModelForm):
         }
         widgets = {
             'insumo': forms.Select(attrs={'class': 'form-input', 'style': 'width: 100%; padding: 8px;'}),
-            'cantidad_necesaria': forms.NumberInput(attrs={'class': 'form-input', 'style': 'width: 100%; padding: 8px;'}),
+            'cantidad_necesaria': forms.NumberInput(attrs={'class': 'form-input', 'style': 'width: 100%; padding: 8px;', 'step': 'any'}),
         }

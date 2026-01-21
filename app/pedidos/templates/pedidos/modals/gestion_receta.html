@@ -18,7 +18,7 @@
                 <div>
                     <strong>{{ receta.insumo.nombre }}</strong>
                     <div style="font-size: 0.85rem; color: #6B7280;">
-                        {{ receta.cantidad_necesaria|floatformat }} {{ receta.insumo.get_unidad_medida_display }}
+                        {{ receta.cantidad_necesaria|floatformat:"-3" }} {{ receta.insumo.get_unidad_medida_display }}
                     </div>
                 </div>
                 <!-- BOTÓN ELIMINAR INGREDIENTE -->

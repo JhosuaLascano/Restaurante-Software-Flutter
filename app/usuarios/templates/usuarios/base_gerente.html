@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Gerencia - DineTrack{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'usuarios/css/dashboard_gerente.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- HTMX para interactividad -->
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fas fa-utensils"></i> El Rincon...
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'usuarios:dashboard_gerente' %}" class="{% block active_dashboard %}{% endblock %}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a href="{% url 'usuarios:gestion_menu' %}" class="{% block active_menu %}{% endblock %}">
+                <i class="fas fa-hamburger"></i> Menú
+            </a>
+            <a href="{% url 'usuarios:gestion_inventario' %}" class="{% block active_inventario %}{% endblock %}">
+                <i class="fas fa-boxes"></i> Inventario
+            </a>
+            <a href="{% url 'usuarios:reportes_ventas' %}" class="{% block active_reportes %}{% endblock %}">
+                <i class="fas fa-chart-line"></i> Reportes
+            </a>
+            <a href="{% url 'usuarios:lista_usuarios' %}" class="{% block active_personal %}{% endblock %}">
+                <i class="fas fa-users"></i> Personal
+            </a>
+            <a href="{% url 'caja:gestion_caja' %}" class="{% block active_caja %}{% endblock %}">
+                <i class="fas fa-cash-register"></i> Caja
+            </a>
+            <a href="{% url 'usuarios:logout' %}">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <div id="modal-container"></div>
+
+    {% block extra_scripts %}{% endblock %}
+
+</body>
+
+</html>
