@@ -31,6 +31,9 @@
             <a href="{% url 'usuarios:reportes_ventas' %}" class="{% block active_reportes %}{% endblock %}">
                 <i class="fas fa-chart-line"></i> Reportes
             </a>
+            <a href="{% url 'pedidos:reporte_tiempos_cocina' %}">
+                <i class="fas fa-stopwatch"></i> Tiempos Cocina
+            </a>
             <a href="{% url 'usuarios:lista_usuarios' %}" class="{% block active_personal %}{% endblock %}">
                 <i class="fas fa-users"></i> Personal
             </a>

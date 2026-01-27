@@ -15,6 +15,7 @@ from usuarios.models import AuditLog
 from usuarios.models import AuditLog
 from inventario.models import MovimientoKardex
 from .forms import ProductoForm # Importar Formulario
+from django.db.models import Avg, F, Count, ExpressionWrapper, DurationField
 
 # --- FUNCIÓN AUXILIAR PARA LA IP ---
 def get_client_ip(request):
@@ -114,6 +115,7 @@ def confirmar_pedido(request, pedido_id):
                 pedido.observacion = nota
 
         pedido.estado = 'confirmado'
+        pedido.fecha_confirmado = timezone.now() # GUARDAR LA HORA DE ENVIO
         pedido.save()
         
         # 1. LOG DE AUDITORÍA
@@ -189,6 +191,8 @@ def terminar_pedido(request, pedido_id):
     
     if pedido.estado == 'confirmado':
         pedido.estado = 'listo'
+        pedido.fecha_listo = timezone.now() # GUARDAR LA HORA FINAL
+        pedido.notificacion_vista = False   # ACTIVAR NOTIFICACIÓN
         pedido.save()
 
         # LOG DE AUDITORÍA
@@ -418,10 +422,11 @@ def check_notificaciones(request):
     if request.user.rol != 'mesero':
         return HttpResponse("")
 
-    # Buscar pedidos listos que pertenezcan al mesero actual
+    # Buscar pedidos listos que pertenezcan al mesero actual Y que no hayan sido vistos
     pedidos_listos = Pedido.objects.filter(
         mesero=request.user, 
-        estado='listo'
+        estado='listo',
+        notificacion_vista=False
     )
     
     if not pedidos_listos.exists():
@@ -429,3 +434,50 @@ def check_notificaciones(request):
 
     return render(request, 'pedidos/partials/notificaciones.html', {'pedidos_listos': pedidos_listos})
 
+    return render(request, 'pedidos/partials/notificaciones.html', {'pedidos_listos': pedidos_listos})
+
+@login_required
+def marcar_notificacion_vista(request, pedido_id):
+    pedido = get_object_or_404(Pedido, pk=pedido_id)
+    if pedido.mesero == request.user:
+        pedido.notificacion_vista = True
+        pedido.save()
+    return HttpResponse("")
+
+@login_required
+def reporte_tiempos_cocina(request):
+    # Solo gerente o admin
+    if request.user.rol not in ['gerente', 'admin']:
+        return redirect('usuarios:login')
+
+    # 1. Reporte Histórico (Promedios)
+    reporte_qs = DetallePedido.objects.filter(
+        pedido__fecha_confirmado__isnull=False, 
+        pedido__fecha_listo__isnull=False
+    ).values(
+        'producto__nombre'
+    ).annotate(
+        tiempo_promedio=Avg(
+            ExpressionWrapper(
+                F('pedido__fecha_listo') - F('pedido__fecha_confirmado'),
+                output_field=DurationField()
+            )
+        ),
+        veces_pedido=Count('id')
+    ).order_by('-tiempo_promedio')
+    
+    # Convertir a dict para búsqueda rápida por nombre en el template
+    promedios = {item['producto__nombre']: item['tiempo_promedio'] for item in reporte_qs}
+
+    # 2. Pedidos en Curso (Monitor en Vivo)
+    # Pedidos confirmados pero NO listos
+    pedidos_en_curso = Pedido.objects.filter(
+        estado='confirmado',
+        fecha_listo__isnull=True
+    ).order_by('fecha_confirmado')
+
+    return render(request, 'pedidos/reporte_tiempos.html', {
+        'reporte': reporte_qs,
+        'pedidos_en_curso': pedidos_en_curso,
+        'promedios_json': json.dumps({k: v.total_seconds() for k, v in promedios.items() if v}, default=str)
+    })

@@ -25,4 +25,7 @@ urlpatterns = [
     path('productos/<int:producto_id>/receta/', views.gestion_receta, name='gestion_receta'),
     path('receta/eliminar/<int:receta_id>/', views.eliminar_ingrediente, name='eliminar_ingrediente'),
     path('check_notificaciones/', views.check_notificaciones, name='check_notificaciones'),
+    # Notificación y Reporte
+    path('notificacion/<int:pedido_id>/vista/', views.marcar_notificacion_vista, name='marcar_notificacion_vista'),
+    path('reportes/tiempos/', views.reporte_tiempos_cocina, name='reporte_tiempos_cocina'),
 ]

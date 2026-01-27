@@ -64,6 +64,14 @@ class Pedido(models.Model):
     cliente = models.ForeignKey('clientes.Cliente', on_delete=models.SET_NULL, null=True, blank=True)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='borrador')
     observacion = models.TextField(blank=True, null=True, verbose_name="Notas para Cocina")
+    
+    # Tiempos de Cocina
+    fecha_confirmado = models.DateTimeField(null=True, blank=True, verbose_name="Hora enviado a Cocina")
+    fecha_listo = models.DateTimeField(null=True, blank=True, verbose_name="Hora terminado en Cocina")
+    
+    # Notificaciones
+    notificacion_vista = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
