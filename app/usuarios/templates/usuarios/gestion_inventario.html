@@ -55,6 +55,7 @@
             <tr>
                 <th>Insumo</th>
                 <th>Unidad</th>
+                <th>Tipo</th>
                 <th>Costo Promedio</th>
                 <th>Stock Actual</th>
                 <th>Valor Total</th>
@@ -67,6 +68,15 @@
             <tr>
                 <td><strong>{{ i.nombre }}</strong></td>
                 <td>{{ i.get_unidad_medida_display }}</td>
+                <td>{{ i.get_unidad_medida_display }}</td>
+                <td class="text-center">
+                    {% if i.es_subreceta %}
+                    <span
+                        style="background: #e0e7ff; color: #4318ff; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 0.75rem;">BATCH/RECETA</span>
+                    {% else %}
+                    <span style="color: #a0aec0; font-size: 0.8rem;">Insumo</span>
+                    {% endif %}
+                </td>
                 <td>${{ i.costo_unitario|floatformat:2 }}</td>
 
                 {% if i.stock_actual <= i.stock_minimo %} <td
@@ -94,15 +104,26 @@
                         <button hx-get="{% url 'inventario:editar_insumo' i.id %}" hx-target="#modal-container"
                             hx-swap="innerHTML" class="edit-btn"
                             style="background: transparent; border: none; color: #f28500; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 5px;">
-                            <i class="fas fa-edit"></i> Editar
-                        </button>
-                        <button hx-post="{% url 'inventario:eliminar_insumo' i.id %}"
-                            hx-confirm="⚠️ ¿Estás seguro de eliminar el insumo '{{ i.nombre }}'?\nSi borras esto, las recetas que lo usen quedarán incompletas."
-                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                            style="background: transparent; border: none; color: #dc2626; font-weight: bold; cursor: pointer; font-size: 1rem;"
-                            title="Eliminar Insumo">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+                            <button hx-get="{% url 'inventario:editar_insumo' i.id %}" hx-target="#modal-container"
+                                hx-swap="innerHTML" class="edit-btn"
+                                style="background: transparent; border: none; color: #f28500; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 5px;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            {% if i.es_subreceta %}
+                            <button hx-get="{% url 'pedidos:gestion_receta_insumo' i.id %}" hx-target="#modal-container"
+                                hx-swap="innerHTML" class="edit-btn"
+                                style="background: transparent; border: none; color: #4318ff; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 5px;"
+                                title="Gestionar Ingredientes de la Sub-receta">
+                                <i class="fas fa-scroll"></i>
+                            </button>
+                            {% endif %}
+                            <button hx-post="{% url 'inventario:eliminar_insumo' i.id %}"
+                                hx-confirm="⚠️ ¿Estás seguro de eliminar el insumo '{{ i.nombre }}'?\nSi borras esto, las recetas que lo usen quedarán incompletas."
+                                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                style="background: transparent; border: none; color: #dc2626; font-weight: bold; cursor: pointer; font-size: 1rem;"
+                                title="Eliminar Insumo">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                     </td>
             </tr>
             {% empty %}

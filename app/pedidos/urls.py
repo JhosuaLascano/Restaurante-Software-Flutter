@@ -28,4 +28,11 @@ urlpatterns = [
     # Notificación y Reporte
     path('notificacion/<int:pedido_id>/vista/', views.marcar_notificacion_vista, name='marcar_notificacion_vista'),
     path('reportes/tiempos/', views.reporte_tiempos_cocina, name='reporte_tiempos_cocina'),
+    
+    # Ingeniería de Menú
+    path('productos/<int:producto_id>/ficha-tecnica/', views.ver_ficha_tecnica, name='ver_ficha_tecnica'),
+
+    # Sub-recetas (Insumos)
+    path('insumos/<int:insumo_id>/receta/', views.gestion_receta_insumo, name='gestion_receta_insumo'),
+    path('insumos/receta/eliminar/<int:receta_id>/', views.eliminar_ingrediente_insumo, name='eliminar_ingrediente_insumo'),
 ]

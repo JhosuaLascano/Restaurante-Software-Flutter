@@ -1,5 +1,4 @@
 
-
 # 📁 pedidos/views.py
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
@@ -13,7 +12,7 @@ from clientes.models import Cliente
 from .models import Pedido, Producto, DetallePedido, Mesa, Factura
 from usuarios.models import AuditLog
 from usuarios.models import AuditLog
-from inventario.models import MovimientoKardex
+from inventario.models import MovimientoKardex, Insumo
 from .forms import ProductoForm # Importar Formulario
 from django.db.models import Avg, F, Count, ExpressionWrapper, DurationField
 
@@ -481,3 +480,112 @@ def reporte_tiempos_cocina(request):
         'pedidos_en_curso': pedidos_en_curso,
         'promedios_json': json.dumps({k: v.total_seconds() for k, v in promedios.items() if v}, default=str)
     })
+
+# --- INGENIERÍA DE MENÚ (FICHA TÉCNICA) ---
+from decimal import Decimal
+
+def calcular_costo_receta(ingredientes_queryset):
+    """
+    Calcula el costo total de una lista de ingredientes (Receta),
+    manejando recursividad si hay sub-recetas.
+    Retorna: (Costo Total, Lista Detallada)
+    """
+    costo_total = Decimal(0)
+    detalle = []
+    
+    for item in ingredientes_queryset:
+        insumo = item.insumo
+        
+        # 1. Determinar Costo Unitario
+        costo_unitario = insumo.costo_unitario
+        es_subreceta = getattr(insumo, 'es_subreceta', False)
+
+        # Si es SUB-RECETA, calculamos su costo real basado en SUS ingredientes
+        if es_subreceta:
+            sub_ingredientes = insumo.ingredientes_de_receta.all()
+            if sub_ingredientes.exists():
+                costo_batch, _ = calcular_costo_receta(sub_ingredientes)
+                # El costo unitario es Costo Batch / Rendimiento
+                rendimiento = insumo.rendimiento_receta if insumo.rendimiento_receta > 0 else 1
+                costo_unitario = costo_batch / rendimiento
+
+        costo_item = item.cantidad_necesaria * costo_unitario
+        costo_total += costo_item
+        
+        detalle.append({
+            'nombre': insumo.nombre,
+            'es_subreceta': es_subreceta,
+            'unidad': insumo.get_unidad_medida_display(),
+            'cantidad': item.cantidad_necesaria,
+            'costo_unitario': costo_unitario, # Costo Real calculado
+            'costo_total': costo_item
+        })
+
+    return costo_total, detalle
+
+@login_required
+def ver_ficha_tecnica(request, producto_id):
+    if request.user.rol not in ['gerente', 'admin']:
+        return HttpResponse("No autorizado", status=403)
+        
+    producto = get_object_or_404(Producto, pk=producto_id)
+    receta_qs = producto.receta.all()
+    
+    # Calcular Costos
+    costo_materia_prima, detalle_ingredientes = calcular_costo_receta(receta_qs)
+    
+    # Calcular KPIs
+    precio_venta = producto.precio
+    # Evitar division por cero
+    food_cost_pct = (costo_materia_prima / precio_venta * 100) if precio_venta > 0 else 0
+    margen_contribucion = precio_venta - costo_materia_prima
+    margen_pct = (margen_contribucion / precio_venta * 100) if precio_venta > 0 else 0
+    
+    return render(request, 'pedidos/ficha_tecnica.html', {
+        'producto': producto,
+        'costo_total': costo_materia_prima,
+        'ingredientes': detalle_ingredientes,
+        'food_cost_pct': food_cost_pct,
+        'margen_contribucion': margen_contribucion,
+        'margen_pct': margen_pct
+    })
+
+
+# --- GESTION DE SUB-RECETAS (Insumos que son Recetas) ---
+@login_required
+def gestion_receta_insumo(request, insumo_id):
+    parent_insumo = get_object_or_404(Insumo, pk=insumo_id)
+    
+    # Validar que sea una sub-receta
+    if not parent_insumo.es_subreceta:
+        return HttpResponse('Este insumo no esta marcado como Sub-receta.', status=400)
+
+    recetas = parent_insumo.ingredientes_de_receta.all() # Related name: ingredientes_de_receta
+    
+    if request.method == 'POST':
+        form = RecetaForm(request.POST)
+        if form.is_valid():
+            nueva_receta = form.save(commit=False)
+            nueva_receta.insumo_principal = parent_insumo # ASIGNAMOS EL PADRE INSUMO
+            nueva_receta.save()
+            
+            # Refrescar
+            recetas = parent_insumo.ingredientes_de_receta.all()
+            return render(request, 'pedidos/modals/gestion_receta_insumo.html', {
+                'parent_insumo': parent_insumo, 'recetas': recetas, 'form': RecetaForm()
+            })
+    else:
+        form = RecetaForm()
+
+    return render(request, 'pedidos/modals/gestion_receta_insumo.html', {
+        'parent_insumo': parent_insumo,
+        'recetas': recetas,
+        'form': form
+    })
+
+@login_required
+def eliminar_ingrediente_insumo(request, receta_id):
+    receta_item = get_object_or_404(Receta, pk=receta_id)
+    insumo_id = receta_item.insumo_principal.id
+    receta_item.delete()
+    return gestion_receta_insumo(request, insumo_id)

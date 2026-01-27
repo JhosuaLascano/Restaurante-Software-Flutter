@@ -26,6 +26,11 @@ class Insumo(models.Model):
     stock_actual = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     costo_unitario = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     stock_minimo = models.DecimalField(max_digits=10, decimal_places=3, default=5)
+    
+    # NUEVOS CAMPOS PARA INGENIERIA DE MENÚ
+    es_subreceta = models.BooleanField(default=False, help_text="Marcar si este insumo es una preparación (ej. Salsa de Tomate)")
+    rendimiento_receta = models.DecimalField(max_digits=10, decimal_places=3, default=1, help_text="Cuánto rinde la receta de este insumo (en su unidad de medida)")
+
 
     def __str__(self):
         # Formatear el stock para evitar confusiones (eliminar ceros decimales si es entero)
@@ -60,11 +65,24 @@ class MovimientoKardex(models.Model):
     def __str__(self):
         return f"{self.tipo.upper()} - {self.insumo.nombre}"
 
-# 4. RECETAS (Conexión Plato -> Insumos)
+# 4. RECETAS (Conexión Plato -> Insumos  O  Insumo(Subreceta) -> Insumos)
 class Receta(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='receta')
+    # La receta puede pertenecer a un PRODUCTO (Plato final) O a un INSUMO (Subreceta)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='receta', null=True, blank=True)
+    insumo_principal = models.ForeignKey(Insumo, on_delete=models.CASCADE, related_name='ingredientes_de_receta', null=True, blank=True)
+
     insumo = models.ForeignKey(Insumo, on_delete=models.CASCADE)
     cantidad_necesaria = models.DecimalField(max_digits=10, decimal_places=3, help_text="Cantidad para 1 plato")
 
     def __str__(self):
-        return f"{self.producto.nombre} usa {self.cantidad_necesaria} de {self.insumo.nombre}"
+        parent = self.producto.nombre if self.producto else self.insumo_principal.nombre
+        return f"{parent} usa {self.cantidad_necesaria} de {self.insumo.nombre}"
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=(models.Q(producto__isnull=False) & models.Q(insumo_principal__isnull=True)) | 
+                      (models.Q(producto__isnull=True) & models.Q(insumo_principal__isnull=False)),
+                name='receta_solo_un_padre'
+            )
+        ]
