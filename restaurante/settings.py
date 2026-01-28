@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'inventario',
     'clientes',
     'caja',
+    'eventos.apps.EventosConfig',
 ]
 
 MIDDLEWARE = [

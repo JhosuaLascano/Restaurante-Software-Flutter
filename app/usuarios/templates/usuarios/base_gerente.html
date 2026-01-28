@@ -5,10 +5,85 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Gerencia - DineTrack{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{% static 'usuarios/css/dashboard_gerente.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- HTMX para interactividad -->
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+
+    <style>
+        :root {
+            /* TOMATO/RED PALETTE GLOBAL */
+            --primary-color: #FF5722;
+            /* Deep Orange */
+            --secondary-color: #FF8A65;
+            /* Light Salmon */
+            --text-color: #2B3674;
+            --text-muted: #A3AED0;
+            --bg-light: #FFF5F2;
+            /* Very light reddish/warm bg instead of cream */
+            --card-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+
+            --success-gradient: linear-gradient(135deg, #059669 0%, #34D399 100%);
+            --danger-gradient: linear-gradient(135deg, #E11D48 0%, #FB7185 100%);
+            --info-gradient: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+            /* Tomato -> OrangeRed */
+            --warning-gradient: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-light) !important;
+            color: var(--text-color);
+        }
+
+        /* Sidebar override */
+        .sidebar {
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar .logo {
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+
+        .sidebar .nav-links a {
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: all 0.3s;
+            border-radius: 10px;
+            margin: 0 10px;
+        }
+
+        .sidebar .nav-links a:hover,
+        .sidebar .nav-links a.active {
+            color: var(--primary-color);
+            background: rgba(255, 87, 34, 0.1);
+        }
+
+        .sidebar .nav-links a i {
+            width: 25px;
+        }
+
+        /* Global Card Styles matching Simulador */
+        .card,
+        .card-custom {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            background: white;
+        }
+
+        /* Buttons Globally */
+        .btn-primary,
+        .btn-gradient {
+            background: var(--info-gradient) !important;
+            border: none;
+            color: white;
+        }
+    </style>
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -39,6 +114,9 @@
             </a>
             <a href="{% url 'caja:gestion_caja' %}" class="{% block active_caja %}{% endblock %}">
                 <i class="fas fa-cash-register"></i> Caja
+            </a>
+            <a href="{% url 'eventos:dashboard_eventos' %}">
+                <i class="fas fa-calendar-alt"></i> Eventos
             </a>
             <a href="{% url 'usuarios:logout' %}">
                 <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
