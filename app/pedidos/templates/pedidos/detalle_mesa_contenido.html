@@ -4,13 +4,15 @@
 
         <div class="config-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span class="label-small"><i class="fas fa-couch"></i> Configuración de Mesa</span>
+                <span class="label-small"><i class="fas fa-couch"></i> Detalles del Pedido</span>
                 <!-- Botón Cerrar Modal -->
                 <button onclick="document.getElementById('modal-container').innerHTML=''"
                     style="border: none; background: transparent; cursor: pointer; color: #9CA3AF; font-size: 1.2rem;">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
+
+            {% if mesa %}
             <div class="mesa-selectors">
                 <div class="selector-box">
                     <span>Mesa {{ mesa.numero }}</span>
@@ -27,6 +29,17 @@
                     </span>
                 </div>
             </div>
+            {% else %}
+            <!-- VISTA DELIVERY / AGENDA -->
+            <div class="mesa-selectors">
+                <div class="selector-box" style="flex: 2;">
+                    <span><i class="fas fa-user"></i> {{ pedido.cliente.nombres|default:"Cliente Casual" }}</span>
+                </div>
+                <div class="selector-box">
+                    <span><i class="fas fa-clock"></i> {{ pedido.fecha_entrega|time:"H:i" }}</span>
+                </div>
+            </div>
+            {% endif %}
         </div>
 
         <div style="margin-top: 20px;">

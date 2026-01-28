@@ -36,17 +36,14 @@
                 <td style="color: #707eae;">{{ evento.fecha_evento|date:"d M Y, H:i" }}</td>
                 <td style="font-weight: 600;">{{ evento.personas }}</td>
                 <td>
-                    <span style="padding: 4px 10px; border-radius: 6px; font-size: 0.8em; font-weight: 700;
-                        {% if evento.estado == 'borrador' %}background: #fff8e1; color: #ffc107;
-                        {% elif evento.estado == 'confirmado' %}background: #e8f5e9; color: #4caf50;
-                        {% else %}background: #ffebee; color: #f44336;{% endif %}">
+                    <span class="status-badge status-{{ evento.estado }}">
                         {{ evento.get_estado_display }}
                     </span>
                 </td>
                 <td style="font-weight: 700;">${{ evento.precio_venta_total|floatformat:2 }}</td>
                 <td>
                     <span
-                        style="color: {% if evento.margen_ganancia > 30 %}#4caf50{% else %}#ff9800{% endif %}; font-weight: 700;">
+                        class="{% if evento.margen_ganancia > 30 %}text-margen-alto{% else %}text-margen-bajo{% endif %}">
                         {{ evento.margen_ganancia|floatformat:1 }}%
                     </span>
                 </td>

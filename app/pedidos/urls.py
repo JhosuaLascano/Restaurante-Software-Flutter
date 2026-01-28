@@ -19,6 +19,7 @@ urlpatterns = [
     path('factura/<int:factura_id>/ticket/', views.ver_ticket, name='ver_ticket'),
     path('', views.panel_mesas, name='panel_mesas'),
     
+    
     path('productos/nuevo/', views.crear_producto, name='crear_producto'),
     path('productos/editar/<int:pk>/', views.editar_producto, name='editar_producto'),
     path('productos/eliminar/<int:pk>/', views.eliminar_producto, name='eliminar_producto'),
@@ -35,4 +36,9 @@ urlpatterns = [
     # Sub-recetas (Insumos)
     path('insumos/<int:insumo_id>/receta/', views.gestion_receta_insumo, name='gestion_receta_insumo'),
     path('insumos/receta/eliminar/<int:receta_id>/', views.eliminar_ingrediente_insumo, name='eliminar_ingrediente_insumo'),
+    
+    # API Agenda
+    path('api/agenda/', views.api_pedidos_agenda, name='api_pedidos_agenda'),
+    path('nuevo/agendado/', views.crear_pedido_agendado, name='crear_pedido_agendado'),
+    path('editar/pedido/<int:pedido_id>/', views.editar_pedido_directo, name='editar_pedido_directo'),
 ]

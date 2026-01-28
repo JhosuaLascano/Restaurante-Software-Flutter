@@ -589,3 +589,96 @@ def eliminar_ingrediente_insumo(request, receta_id):
     insumo_id = receta_item.insumo_principal.id
     receta_item.delete()
     return gestion_receta_insumo(request, insumo_id)
+
+# --- API JSON FOR CALENDAR ---
+@login_required
+def api_pedidos_agenda(request):
+    # Retorna pedidos PROGRAMADOS para FullCalendar (tienen fecha_entrega)
+    pedidos = Pedido.objects.filter(fecha_entrega__isnull=False).exclude(estado='cancelado')
+    events_data = []
+    
+    for pedido in pedidos:
+        titulo = f"Pedido #{pedido.id}"
+        cliente_nombre = "Cliente Casual"
+        
+        if pedido.cliente:
+            cliente_nombre = pedido.cliente.nombres
+            titulo += f" - {cliente_nombre}"
+        elif pedido.mesa:
+            titulo += f" (Mesa {pedido.mesa.numero})"
+            
+        # Resumen de Items
+        items_resumen = ", ".join([f"{item.cantidad}x {item.producto.nombre}" for item in pedido.items.all()])
+            
+        events_data.append({
+            'id': f'ped_{pedido.id}',
+            'title': titulo,
+            'start': pedido.fecha_entrega.isoformat(),
+            'url': reverse('pedidos:detalle_mesa', args=[pedido.mesa.id]) if pedido.mesa else '#',
+            'color': '#FF5722', # Naranja Tomate
+            'extendedProps': {
+                'tipo': 'pedido',
+                'estado': pedido.get_estado_display(),
+                'fecha_pedido': pedido.created_at.strftime("%d/%m/%Y %H:%M"),
+                'fecha_entrega': pedido.fecha_entrega.strftime("%d/%m/%Y %H:%M"),
+                'cliente': cliente_nombre,
+                'items': items_resumen,
+                'valor': float(pedido.total)
+            }
+        })
+        
+    return JsonResponse(events_data, safe=False)
+
+@login_required
+@require_POST
+def crear_pedido_agendado(request):
+    fecha_entrega = request.POST.get('fecha_entrega') # YYYY-MM-DDTHH:mm
+    cliente_nombre = request.POST.get('nombre_cliente')
+    
+    # 1. Crear Cliente 'Ad-hoc' o buscar
+    # Por simplicidad ahora, si no existe un sistema de clientes robusto en el frontend,
+    # podríamos solo asignar el nombre a una "Nota" o crear un cliente simple.
+    # Asumiremos que el frontend enviará (idealmente) un ID de cliente o creamos uno "Casual".
+    
+    cliente = None
+    if cliente_nombre:
+        # Busca o crea cliente por Nombre (Básico)
+        cliente, _ = Cliente.objects.get_or_create(
+            nombres=cliente_nombre,
+            defaults={'cedula_o_ruc': '9999999999', 'direccion': 'Dirección Pendiente'}
+        )
+        
+    # 2. Crear Pedido
+    pedido = Pedido.objects.create(
+        mesero=request.user,
+        estado='borrador',
+        fecha_entrega=fecha_entrega,
+        cliente=cliente,
+        mesa=None # Pedido de Agenda / Delivery
+    )
+    
+    # 3. Redirigir a "Detalle Mesa" (Modificado para soportar pedidos sin mesa)
+    # Como detalle_mesa requiere mesa_id, necesitamos una vista que maneje "Pedido por ID"
+    # OJO: detalle_mesa actual depende FUERTE de mesa_id.
+    # Estrategia Rápida: Crear una "Mesa Virtual" para la visualización o adaptar detalle_mesa.
+    # Adaptaremos detalle_mesa para que si mesa_id es 0 o None, busque por pedido_id.
+    # PERO la URL espera int:mesa_id.
+    
+    # Solución: Redirigir a una nueva vista o usar una "Mesa Virtual" 999.
+    # Mejor: Crear 'editar_pedido_directo' que reutilice el template.
+    
+    return redirect('pedidos:editar_pedido_directo', pedido_id=pedido.id) 
+
+@login_required
+def editar_pedido_directo(request, pedido_id):
+    pedido = get_object_or_404(Pedido, pk=pedido_id)
+    productos = Producto.objects.filter(disponible=True)
+    
+    # Renderizamos el template específico que no necesita mesa
+    return render(request, 'pedidos/editar_pedido.html', {
+        'pedido': pedido,
+        'productos': productos,
+        'mesa': None, # Explícito
+        'is_htmx': False 
+    })
+

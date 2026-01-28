@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.urls import reverse
+from django.utils.dateparse import parse_datetime
+from django.utils import timezone
 from .models import Evento, DetalleMenu, ItemMenajeEvento, GastoEvento, IngresoEvento, Menaje
 from .forms import EventoForm, EventoCreateForm, DetalleMenuForm, CostoAdicionalForm, GastoEventoForm, IngresoEventoForm, ItemMenajeEventoForm
 from pedidos.models import Producto
@@ -60,13 +62,32 @@ def simulador_evento(request, evento_id):
 def actualizar_evento_datos(request, evento_id):
     evento = get_object_or_404(Evento, pk=evento_id)
     if request.method == 'POST':
-        form = EventoForm(request.POST, instance=evento)
-        if form.is_valid():
-            form.save()
-            # Si cambia pax, tal vez queramos recalcular menaje? Por ahora manual.
-            messages.success(request, "Datos del evento actualizados.")
-        else:
-            messages.error(request, "Error al actualizar los datos del evento.")
+        nombre = request.POST.get('nombre')
+        personas = request.POST.get('personas')
+        tipo_servicio = request.POST.get('tipo_servicio')
+        estado = request.POST.get('estado')
+        fecha_evento_str = request.POST.get('fecha_evento') # "YYYY-MM-DDTHH:MM" o similar
+        
+        try:
+            evento.nombre = nombre
+            evento.personas = int(personas) if personas else evento.personas
+            evento.tipo_servicio = tipo_servicio
+            if estado:
+                evento.estado = estado
+            
+            if fecha_evento_str:
+                # Asumimos que viene de un input datetime-local que es bastante standard
+                dt_obj = parse_datetime(fecha_evento_str)
+                if dt_obj:
+                    if timezone.is_naive(dt_obj):
+                         dt_obj = timezone.make_aware(dt_obj)
+                    evento.fecha_evento = dt_obj
+                
+            evento.save()
+            messages.success(request, "Datos del evento actualizados correctamente.")
+        except Exception as e:
+            messages.error(request, f"Error al actualizar: {e}")
+            
     return redirect(f"{reverse('eventos:simulador_evento', args=[evento.id])}#general")
 
 # --- MENU ---
@@ -229,3 +250,35 @@ def agregar_item_menaje(request, evento_id):
             messages.error(request, "Error al agregar menaje. Verifique los datos.")
             
     return redirect(f"{reverse('eventos:simulador_evento', args=[evento.id])}#menaje")
+
+# --- API JSON FOR CALENDAR ---
+@login_required
+def api_eventos(request):
+    # Retorna eventos para FullCalendar
+    # Mostrar TODOS los eventos menos los cancelados para debug
+    eventos = Evento.objects.exclude(estado='cancelado')
+    events_data = []
+    
+    for evento in eventos:
+        color = '#F59E0B' # Amarillo (Borrador)
+        if evento.estado == 'confirmado':
+            color = '#10B981' # Verde
+        elif evento.estado == 'finalizado':
+            color = '#3B82F6' # Azul
+            
+        events_data.append({
+            'id': f'evt_{evento.id}',
+            'title': evento.nombre, # Solo nombre, detalles en el modal/card
+            'start': evento.fecha_evento.isoformat(),
+            'url': reverse('eventos:simulador_evento', args=[evento.id]),
+            'color': color,
+            'extendedProps': {
+                'tipo': 'evento',
+                'servicio': evento.get_tipo_servicio_display(),
+                'personas': evento.personas,
+                'fecha_creacion': evento.created_at.strftime("%d/%m/%Y"),
+                'estado_texto': evento.get_estado_display()
+            }
+        })
+        
+    return JsonResponse(events_data, safe=False)

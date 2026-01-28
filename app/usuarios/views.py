@@ -373,3 +373,10 @@ def editar_usuario(request, usuario_id):
         form = EditarUsuarioForm(instance=usuario_editar, user=request.user)
     
     return render(request, 'usuarios/editar_usuario.html', {'form': form, 'usuario': usuario_editar})
+
+@login_required
+def agenda_pedidos(request):
+    if not es_gerente(request.user):
+        return redirect('usuarios:login')
+        
+    return render(request, 'usuarios/agenda.html')

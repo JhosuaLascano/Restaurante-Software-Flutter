@@ -118,6 +118,9 @@
             <a href="{% url 'eventos:dashboard_eventos' %}">
                 <i class="fas fa-calendar-alt"></i> Eventos
             </a>
+            <a href="{% url 'usuarios:agenda_pedidos' %}" class="{% block active_agenda %}{% endblock %}">
+                <i class="fas fa-calendar-check"></i> Agenda
+            </a>
             <a href="{% url 'usuarios:logout' %}">
                 <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
             </a>

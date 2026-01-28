@@ -31,4 +31,7 @@ urlpatterns = [
     # Legacy (se mantienen por si acaso, aunque redirijan o no se usen)
     path('agregar_extra/<int:evento_id>/', views.agregar_costo_extra, name='agregar_costo_extra'),
     path('eliminar_extra/<int:item_id>/', views.eliminar_costo_extra, name='eliminar_costo_extra'),
+    
+    # API
+    path('api/eventos/', views.api_eventos, name='api_eventos'),
 ]
