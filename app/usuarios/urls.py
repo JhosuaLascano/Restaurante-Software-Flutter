@@ -15,6 +15,7 @@ urlpatterns = [
     path('dashboard/gerente/menu/', views.gestion_menu, name='gestion_menu'),
     path('dashboard/gerente/reportes/', views.reportes_ventas, name='reportes_ventas'),
     path('dashboard/gerente/inventario/', views.gestion_inventario, name='gestion_inventario'),
+    path('dashboard/gerente/agenda/', views.agenda_pedidos, name='agenda_pedidos'),
 
     # Rutas para password reset
     path('password-reset/', views.password_reset_request, name='password_reset'),

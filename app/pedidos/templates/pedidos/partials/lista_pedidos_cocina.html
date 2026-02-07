@@ -21,6 +21,18 @@
     </div>
 
     <div class="card-body">
+        {% if pedido.observacion %}
+        <div
+            style="background: #FEF2F2; border-left: 4px solid #EF4444; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+            <div style="color: #EF4444; font-weight: 800; font-size: 0.8rem; margin-bottom: 4px;">
+                <i class="fas fa-exclamation-circle"></i> NOTA GENERAL:
+            </div>
+            <div style="color: #7F1D1D; font-size: 0.9rem; font-style: italic;">
+                {{ pedido.observacion }}
+            </div>
+        </div>
+        {% endif %}
+
         {% for item in pedido.items.all %}
         <div class="item-row">
             <div class="qty-box">{{ item.cantidad }}</div>

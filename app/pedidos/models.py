@@ -59,10 +59,21 @@ class Pedido(models.Model):
         ('cancelado', 'Cancelado'),
     ]
 
-    mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE, related_name='pedidos')
+    mesa = models.ForeignKey(Mesa, on_delete=models.SET_NULL, null=True, blank=True, related_name='pedidos')
     mesero = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     cliente = models.ForeignKey('clientes.Cliente', on_delete=models.SET_NULL, null=True, blank=True)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='borrador')
+    observacion = models.TextField(blank=True, null=True, verbose_name="Notas para Cocina")
+    
+    # Tiempos de Cocina
+    fecha_confirmado = models.DateTimeField(null=True, blank=True, verbose_name="Hora enviado a Cocina")
+    fecha_listo = models.DateTimeField(null=True, blank=True, verbose_name="Hora terminado en Cocina")
+    # Nuevo campo para Agenda
+    fecha_entrega = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Entrega/Reserva")
+    
+    # Notificaciones
+    notificacion_vista = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -14,13 +14,15 @@ class InsumoForm(forms.ModelForm):
 
     class Meta:
         model = Insumo
-        fields = ['nombre', 'unidad_medida', 'stock_actual', 'costo_unitario', 'stock_minimo']
+        fields = ['nombre', 'unidad_medida', 'stock_actual', 'costo_unitario', 'stock_minimo', 'es_subreceta', 'rendimiento_receta']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-input', 'style': 'width: 100%; padding: 8px;'}),
             'unidad_medida': forms.Select(attrs={'class': 'form-select', 'style': 'width: 100%; padding: 8px;'}),
             'stock_actual': forms.NumberInput(attrs={'class': 'form-input', 'style': 'width: 100%; padding: 8px;', 'step': 'any'}),
             'costo_unitario': forms.NumberInput(attrs={'class': 'form-input', 'style': 'width: 100%; padding: 8px;', 'step': 'any'}),
             'stock_minimo': forms.NumberInput(attrs={'class': 'form-input', 'style': 'width: 100%; padding: 8px;', 'step': 'any'}),
+            'es_subreceta': forms.CheckboxInput(attrs={'style': 'transform: scale(1.5); margin: 10px;'}),
+            'rendimiento_receta': forms.NumberInput(attrs={'class': 'form-input', 'style': 'width: 100%; padding: 8px;', 'step': 'any'}),
         }
 
 class MovimientoKardexForm(forms.ModelForm):

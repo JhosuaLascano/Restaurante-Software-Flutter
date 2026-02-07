@@ -9,9 +9,13 @@
             <strong>¡Pedido Listo!</strong>
             <p>Mesa {{ pedido.mesa.numero }} tiene su orden preparada.</p>
         </div>
-        <button onclick="this.parentElement.remove()" class="toast-close">
-            <i class="fas fa-times"></i>
-        </button>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button hx-post="{% url 'pedidos:marcar_notificacion_vista' pedido.id %}"
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="outerHTML" hx-target="closest .toast-alert"
+                class="btn-ok">
+                OK
+            </button>
+        </div>
     </div>
     {% endfor %}
 </div>
@@ -95,6 +99,22 @@
 
     .toast-close:hover {
         color: #111827;
+    }
+
+    .btn-ok {
+        background: #10B981;
+        color: white;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: 0.2s;
+    }
+
+    .btn-ok:hover {
+        background: #059669;
     }
 </style>
 {% endif %}
