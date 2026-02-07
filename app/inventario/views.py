@@ -3,11 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .models import Insumo, MovimientoKardex
 from .forms import InsumoForm, MovimientoKardexForm
+from core.decorators import gerente_required
 
 @login_required
+@gerente_required
 def crear_insumo(request):
-    if request.user.rol not in ['gerente', 'admin']:
-        return HttpResponse("No autorizado", status=403)
         
     if request.method == 'POST':
         form = InsumoForm(request.POST)
@@ -20,9 +20,8 @@ def crear_insumo(request):
     return render(request, 'pedidos/modals/form_producto.html', {'form': form, 'titulo': 'Nuevo Insumo'})
 
 @login_required
+@gerente_required
 def editar_insumo(request, pk):
-    if request.user.rol not in ['gerente', 'admin']:
-        return HttpResponse("No autorizado", status=403)
 
     insumo = get_object_or_404(Insumo, pk=pk)
     if request.method == 'POST':
@@ -36,9 +35,8 @@ def editar_insumo(request, pk):
     return render(request, 'pedidos/modals/form_producto.html', {'form': form, 'titulo': f'Editar {insumo.nombre}'})
 
 @login_required
+@gerente_required
 def registrar_movimiento(request):
-    if request.user.rol not in ['gerente', 'admin']:
-        return HttpResponse("No autorizado", status=403)
         
     if request.method == 'POST':
         form = MovimientoKardexForm(request.POST)
@@ -68,9 +66,8 @@ def registrar_movimiento(request):
     return render(request, 'pedidos/modals/form_producto.html', {'form': form, 'titulo': 'Registrar Movimiento'})
 
 @login_required
+@gerente_required
 def eliminar_insumo(request, pk):
-    if request.user.rol not in ['gerente', 'admin']:
-        return HttpResponse("No autorizado", status=403)
         
     insumo = get_object_or_404(Insumo, pk=pk)
     

@@ -51,16 +51,29 @@ def gestion_caja(request):
                 return redirect('caja:gestion_caja')
 
     # Historial de cajas
-    historial = SesionCaja.objects.filter(usuario=request.user).order_by('-fecha_apertura')[:10]
+    historial = []
+    if request.user.rol in ['gerente', 'admin']:
+        # Gerente ve TODAS las cajas (para auditar cierres de meseros)
+        historial = SesionCaja.objects.all().order_by('-fecha_apertura')[:20]
+    elif request.user.rol == 'mesero':
+        # Mesero no ve historial (según requerimiento anterior)
+        historial = []
+    else:
+        # Default (otros roles si los hubiera): ven lo suyo
+        historial = SesionCaja.objects.filter(usuario=request.user).order_by('-fecha_apertura')[:10]
     
     # Calcular ventas actuales si la caja está abierta (para mostrar en pantalla)
     ventas_actuales = 0
     if caja_abierta:
-        if request.user.rol in ['gerente', 'admin']:
+        # Si es mesero, NO mostramos ventas acumuladas ni globales
+        if request.user.rol == 'mesero':
+            ventas_actuales = None # Ocultar
+        elif request.user.rol in ['gerente', 'admin']:
             ventas_actuales = Factura.objects.filter(
                 fecha_emision__gte=caja_abierta.fecha_apertura
             ).aggregate(Sum('total'))['total__sum'] or 0
         else:
+             # Default fallback
             ventas_actuales = Factura.objects.filter(
                 pedido__mesero=request.user, 
                 fecha_emision__gte=caja_abierta.fecha_apertura

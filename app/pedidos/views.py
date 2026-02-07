@@ -15,6 +15,7 @@ from usuarios.models import AuditLog
 from inventario.models import MovimientoKardex, Insumo
 from .forms import ProductoForm # Importar Formulario
 from django.db.models import Avg, F, Count, ExpressionWrapper, DurationField
+from core.decorators import mesero_required, cocina_required, gerente_required
 
 # --- FUNCIÓN AUXILIAR PARA LA IP ---
 def get_client_ip(request):
@@ -29,6 +30,7 @@ def get_client_ip(request):
 
 # 👇👇👇 ESTA ES LA VISTA NUEVA QUE FALTABA 👇👇👇
 @login_required
+@mesero_required
 def panel_mesas(request):
     # Traemos todas las mesas ordenadas por su número
     mesas = Mesa.objects.all().order_by('numero')
@@ -36,6 +38,7 @@ def panel_mesas(request):
 # 👆👆👆 FIN DE LO NUEVO 👆👆👆
 
 @login_required
+@mesero_required
 def detalle_mesa(request, mesa_id):
     mesa = get_object_or_404(Mesa, pk=mesa_id)
     
@@ -69,6 +72,7 @@ def detalle_mesa(request, mesa_id):
     return render(request, 'pedidos/detalle_mesa.html', context)
 
 @login_required
+@mesero_required
 def agregar_producto(request, pedido_id, producto_id):
     
     # 1. Buscamos los objetos con los IDs que vienen de la URL
@@ -104,6 +108,7 @@ def agregar_producto(request, pedido_id, producto_id):
     return render(request, 'pedidos/partials/orden_actual.html', context)
 
 @login_required
+@mesero_required
 def confirmar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, pk=pedido_id)
     
@@ -152,6 +157,7 @@ def confirmar_pedido(request, pedido_id):
         return redirect('pedidos:detalle_mesa', mesa_id=pedido.mesa.id)
 
 @login_required
+@mesero_required
 def pagar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, pk=pedido_id)
 
@@ -177,14 +183,14 @@ def pagar_pedido(request, pedido_id):
 # --- VISTAS DE COCINA ---
 
 @login_required
+@cocina_required
 def dashboard_cocina(request):
-    if request.user.rol != 'cocina' and request.user.rol != 'admin':
-        return redirect('usuarios:login')
 
     pedidos = Pedido.objects.filter(estado='confirmado').order_by('created_at')
     return render(request, 'pedidos/dashboard_cocina.html', {'pedidos': pedidos})
 
 @login_required
+@cocina_required
 def terminar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, pk=pedido_id)
     
@@ -206,6 +212,7 @@ def terminar_pedido(request, pedido_id):
 # --- NUEVA VISTA PARA HTMX (+/- CANTIDAD) ---
 
 @login_required
+@mesero_required
 def modificar_cantidad_item(request, item_id, accion):
     # CORREGIDO: Usamos 'DetallePedido' en lugar de 'PedidoItem'
     item = get_object_or_404(DetallePedido, id=item_id)
@@ -244,6 +251,7 @@ def cocina_etag(request, *args, **kwargs):
 
 @login_required
 @etag(cocina_etag)
+@cocina_required
 def actualizar_cocina(request):
    
     # Buscamos SOLO los pedidos 'confirmado' (pendientes de cocinar)
@@ -252,17 +260,20 @@ def actualizar_cocina(request):
     return render(request, 'pedidos/partials/lista_pedidos_cocina.html', {'pedidos': pedidos})
 
 @login_required
+@cocina_required
 def ver_comanda(request, pedido_id):
     pedido = get_object_or_404(Pedido, pk=pedido_id)
     return render(request, 'pedidos/comanda_cocina.html', {'pedido': pedido, 'now': timezone.now()})
 
 @login_required
+@mesero_required
 def modal_cobrar(request, pedido_id):
     # Buscamos el pedido para mostrar el total
     pedido = get_object_or_404(Pedido, pk=pedido_id)
     return render(request, 'pedidos/modals/cobrar.html', {'pedido': pedido})
 
 @login_required
+@mesero_required
 def procesar_pago(request, pedido_id):
     if request.method == 'POST':
         pedido = get_object_or_404(Pedido, pk=pedido_id)
@@ -332,6 +343,7 @@ from .forms import RecetaForm
 from inventario.models import Receta
 
 @login_required
+@gerente_required
 def gestion_receta(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
     recetas = producto.receta.all() # Related name configurado en el modelo
@@ -365,6 +377,7 @@ def gestion_receta(request, producto_id):
     })
 
 @login_required
+@gerente_required
 def eliminar_ingrediente(request, receta_id):
     receta_item = get_object_or_404(Receta, pk=receta_id)
     producto_id = receta_item.producto.id
@@ -374,10 +387,8 @@ def eliminar_ingrediente(request, receta_id):
     return gestion_receta(request, producto_id)
 
 @login_required
+@gerente_required
 def crear_producto(request):
-    # Verificación de rol (opcional, pero recomendada)
-    if request.user.rol not in ['gerente', 'admin']:
-        return HttpResponse("No autorizado", status=403)
 
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
@@ -391,9 +402,8 @@ def crear_producto(request):
     return render(request, 'pedidos/modals/form_producto.html', {'form': form, 'titulo': 'Nuevo Plato'})
 
 @login_required
+@gerente_required
 def editar_producto(request, pk):
-    if request.user.rol not in ['gerente', 'admin']:
-        return HttpResponse("No autorizado", status=403)
 
     producto = get_object_or_404(Producto, pk=pk)
     if request.method == 'POST':
@@ -408,18 +418,16 @@ def editar_producto(request, pk):
 
 @login_required
 @require_POST
+@gerente_required
 def eliminar_producto(request, pk):
-    if request.user.rol not in ['gerente', 'admin']:
-        return HttpResponse("No autorizado", status=403)
     
     producto = get_object_or_404(Producto, pk=pk)
     producto.delete()
     return HttpResponse(status=204, headers={'HX-Refresh': 'true'})
 
 @login_required
+@mesero_required
 def check_notificaciones(request):
-    if request.user.rol != 'mesero':
-        return HttpResponse("")
 
     # Buscar pedidos listos que pertenezcan al mesero actual Y que no hayan sido vistos
     pedidos_listos = Pedido.objects.filter(
@@ -436,6 +444,7 @@ def check_notificaciones(request):
     return render(request, 'pedidos/partials/notificaciones.html', {'pedidos_listos': pedidos_listos})
 
 @login_required
+@mesero_required
 def marcar_notificacion_vista(request, pedido_id):
     pedido = get_object_or_404(Pedido, pk=pedido_id)
     if pedido.mesero == request.user:
@@ -444,10 +453,8 @@ def marcar_notificacion_vista(request, pedido_id):
     return HttpResponse("")
 
 @login_required
+@gerente_required
 def reporte_tiempos_cocina(request):
-    # Solo gerente o admin
-    if request.user.rol not in ['gerente', 'admin']:
-        return redirect('usuarios:login')
 
     # 1. Reporte Histórico (Promedios)
     reporte_qs = DetallePedido.objects.filter(
@@ -524,9 +531,8 @@ def calcular_costo_receta(ingredientes_queryset):
     return costo_total, detalle
 
 @login_required
+@gerente_required
 def ver_ficha_tecnica(request, producto_id):
-    if request.user.rol not in ['gerente', 'admin']:
-        return HttpResponse("No autorizado", status=403)
         
     producto = get_object_or_404(Producto, pk=producto_id)
     receta_qs = producto.receta.all()
@@ -553,6 +559,7 @@ def ver_ficha_tecnica(request, producto_id):
 
 # --- GESTION DE SUB-RECETAS (Insumos que son Recetas) ---
 @login_required
+@gerente_required
 def gestion_receta_insumo(request, insumo_id):
     parent_insumo = get_object_or_404(Insumo, pk=insumo_id)
     
@@ -584,6 +591,7 @@ def gestion_receta_insumo(request, insumo_id):
     })
 
 @login_required
+@gerente_required
 def eliminar_ingrediente_insumo(request, receta_id):
     receta_item = get_object_or_404(Receta, pk=receta_id)
     insumo_id = receta_item.insumo_principal.id
@@ -592,6 +600,7 @@ def eliminar_ingrediente_insumo(request, receta_id):
 
 # --- API JSON FOR CALENDAR ---
 @login_required
+@mesero_required
 def api_pedidos_agenda(request):
     # Retorna pedidos PROGRAMADOS para FullCalendar (tienen fecha_entrega)
     pedidos = Pedido.objects.filter(fecha_entrega__isnull=False).exclude(estado='cancelado')
@@ -631,6 +640,7 @@ def api_pedidos_agenda(request):
 
 @login_required
 @require_POST
+@mesero_required
 def crear_pedido_agendado(request):
     fecha_entrega = request.POST.get('fecha_entrega') # YYYY-MM-DDTHH:mm
     cliente_nombre = request.POST.get('nombre_cliente')
@@ -670,6 +680,7 @@ def crear_pedido_agendado(request):
     return redirect('pedidos:editar_pedido_directo', pedido_id=pedido.id) 
 
 @login_required
+@mesero_required
 def editar_pedido_directo(request, pedido_id):
     pedido = get_object_or_404(Pedido, pk=pedido_id)
     productos = Producto.objects.filter(disponible=True)

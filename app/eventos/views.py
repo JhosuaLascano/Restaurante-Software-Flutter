@@ -10,13 +10,16 @@ from .models import Evento, DetalleMenu, ItemMenajeEvento, GastoEvento, IngresoE
 from .forms import EventoForm, EventoCreateForm, DetalleMenuForm, CostoAdicionalForm, GastoEventoForm, IngresoEventoForm, ItemMenajeEventoForm
 from pedidos.models import Producto
 import math
+from core.decorators import gerente_required
 
 @login_required
+@gerente_required
 def dashboard_eventos(request):
     eventos = Evento.objects.all().order_by('-fecha_evento')
     return render(request, 'eventos/dashboard_eventos.html', {'eventos': eventos})
 
 @login_required
+@gerente_required
 def crear_evento(request):
     if request.method == 'POST':
         form = EventoCreateForm(request.POST)
@@ -29,6 +32,7 @@ def crear_evento(request):
     return render(request, 'eventos/modals/crear_evento.html', {'form': form})
 
 @login_required
+@gerente_required
 def simulador_evento(request, evento_id):
     evento = get_object_or_404(Evento, pk=evento_id)
     menu_items = evento.menu_items.all().select_related('producto')
@@ -59,6 +63,7 @@ def simulador_evento(request, evento_id):
 # --- HTMX / ACTIONS ---
 
 @login_required
+@gerente_required
 def actualizar_evento_datos(request, evento_id):
     evento = get_object_or_404(Evento, pk=evento_id)
     if request.method == 'POST':
@@ -92,6 +97,7 @@ def actualizar_evento_datos(request, evento_id):
 
 # --- MENU ---
 @login_required
+@gerente_required
 def agregar_plato_evento(request, evento_id):
     evento = get_object_or_404(Evento, pk=evento_id)
     if request.method == 'POST':
@@ -107,6 +113,7 @@ def agregar_plato_evento(request, evento_id):
         return redirect('eventos:simulador_evento', evento_id=evento.id)
 
 @login_required
+@gerente_required
 def eliminar_plato_evento(request, item_id):
     item = get_object_or_404(DetalleMenu, pk=item_id)
     evento_id = item.evento.id
@@ -116,6 +123,7 @@ def eliminar_plato_evento(request, item_id):
 # --- MENAJE ---
 
 @login_required
+@gerente_required
 def auto_calcular_menaje(request, evento_id):
     evento = get_object_or_404(Evento, pk=evento_id)
     pax = evento.personas
@@ -164,6 +172,7 @@ def auto_calcular_menaje(request, evento_id):
     return redirect(f"{reverse('eventos:simulador_evento', args=[evento.id])}#menaje")
 
 @login_required
+@gerente_required
 def eliminar_item_menaje(request, item_id):
     item = get_object_or_404(ItemMenajeEvento, pk=item_id)
     evento_id = item.evento.id
@@ -174,6 +183,7 @@ def eliminar_item_menaje(request, item_id):
 # --- FINANZAS (GASTOS E INGRESOS) ---
 
 @login_required
+@gerente_required
 def agregar_gasto(request, evento_id):
     evento = get_object_or_404(Evento, pk=evento_id)
     if request.method == 'POST':
@@ -186,6 +196,7 @@ def agregar_gasto(request, evento_id):
     return redirect(f"{reverse('eventos:simulador_evento', args=[evento.id])}#gastos")
 
 @login_required
+@gerente_required
 def eliminar_gasto(request, item_id):
     item = get_object_or_404(GastoEvento, pk=item_id)
     evento_id = item.evento.id
@@ -194,6 +205,7 @@ def eliminar_gasto(request, item_id):
     return redirect(f"{reverse('eventos:simulador_evento', args=[evento_id])}#gastos")
 
 @login_required
+@gerente_required
 def agregar_ingreso(request, evento_id):
     evento = get_object_or_404(Evento, pk=evento_id)
     if request.method == 'POST':
@@ -206,6 +218,7 @@ def agregar_ingreso(request, evento_id):
     return redirect(f"{reverse('eventos:simulador_evento', args=[evento.id])}#ingresos")
 
 @login_required
+@gerente_required
 def eliminar_ingreso(request, item_id):
     item = get_object_or_404(IngresoEvento, pk=item_id)
     evento_id = item.evento.id
@@ -215,11 +228,13 @@ def eliminar_ingreso(request, item_id):
 
 # --- LEGACY SUPPORT ---
 @login_required
+@gerente_required
 def agregar_costo_extra(request, evento_id):
     # Redirige o adapta a GastoEvento
     return agregar_gasto(request, evento_id)
 
 @login_required
+@gerente_required
 def eliminar_costo_extra(request, item_id):
     # Si aun usas el modelo viejo, dejalo, si no, redirige
     # Por compatibilidad con URL, dejemoslo pero intentemos borrar el objeto correcto
@@ -228,6 +243,7 @@ def eliminar_costo_extra(request, item_id):
 
 
 @login_required
+@gerente_required
 def agregar_item_menaje(request, evento_id):
     evento = get_object_or_404(Evento, pk=evento_id)
     if request.method == 'POST':
@@ -253,6 +269,7 @@ def agregar_item_menaje(request, evento_id):
 
 # --- API JSON FOR CALENDAR ---
 @login_required
+@gerente_required
 def api_eventos(request):
     # Retorna eventos para FullCalendar
     # Mostrar TODOS los eventos menos los cancelados para debug

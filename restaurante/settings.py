@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'clientes',
     'caja',
     'eventos.apps.EventosConfig',
+    'hostal.apps.HostalConfig',
 ]
 
 MIDDLEWARE = [

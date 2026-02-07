@@ -189,6 +189,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>Usuario</th>
                     <th>Fecha Apertura</th>
                     <th>Cierre</th>
                     <th>Inicial</th>
@@ -201,11 +202,13 @@
             <tbody>
                 {% for s in historial %}
                 <tr>
+                    <td><strong>{{ s.usuario.username }}</strong></td>
                     <td>{{ s.fecha_apertura|date:"d/m H:i" }}</td>
                     <td>{{ s.fecha_cierre|date:"H:i"|default:"-" }}</td>
                     <td>${{ s.monto_inicial }}</td>
-                    <td>${{ s.monto_final_sistema|default:"-" }}</td>
-                    <td>${{ s.monto_final_fisico|default:"-" }}</td>
+                    <td>{% if s.monto_final_sistema is not None %}${{ s.monto_final_sistema }}{% else %}-{% endif %}
+                    </td>
+                    <td>{% if s.monto_final_fisico is not None %}${{ s.monto_final_fisico }}{% else %}-{% endif %}</td>
                     <td class="{% if s.diferencia < 0 %}text-red{% elif s.diferencia > 0 %}text-green{% endif %}">
                         {% if s.diferencia is not None %}${{ s.diferencia }}{% else %}-{% endif %}
                     </td>
