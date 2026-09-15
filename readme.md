@@ -1,63 +1,68 @@
-# 🍽️ Sistema de Gestión de Restaurante "El Rincón que No Conoces"
+# Restaurante Software - Monorepo (Django API + Flutter)
 
-Sistema integral web desarrollado en **Django** para la administración operativa y gerencial de un restaurante. Incluye control de inventario, punto de venta (POS) para meseros, monitor de cocina (KDS) y dashboard gerencial con reportes.
-
----
-
-## 🚀 Características Principales
-
-### 🔐 1. Módulo de Seguridad y Usuarios
-* **Roles Definidos:** Administrador, Gerente, Mesero y Cocinero.
-* **Login Seguro:** Acceso mediante Usuario o Correo Electrónico.
-* **Protección:** Bloqueo de cuenta tras 5 intentos fallidos (Django Axes) y cierre de sesión por inactividad.
-* **Auditoría:** Registro automático (Logs) de todas las acciones críticas (quién hizo qué y cuándo).
-
-### 🍔 2. Módulo de Inventario y Costos
-* **Gestión de Insumos:** Control de stock de ingredientes (Pan, Carne, etc.).
-* **Recetas:** Enlace entre Productos de venta e Insumos.
-* **Costeo Automático:** Cálculo del costo real de cada plato basado en sus ingredientes.
-* **Kardex:** Registro histórico de entradas y salidas.
-* **Descarga Automática:** Al vender un plato, se descuentan los ingredientes del inventario automáticamente.
-
-### 📱 3. Módulo de Pedidos (Mesero)
-* **Mapa de Mesas:** Visualización gráfica del estado (Libre/Ocupada).
-* **Toma de Pedidos:** Interfaz ágil para agregar productos.
-* **Buscador de Clientes (HTMX):** Búsqueda en tiempo real de clientes por Cédula o Nombre para facturación.
-* **Flujo de Estados:** Borrador -> Confirmado (Cocina) -> Pagado -> Mesa Libre.
-
-### 👨‍🍳 4. Módulo de Cocina (KDS)
-* **Monitor en Tiempo Real:** Los pedidos confirmados aparecen instantáneamente.
-* **Gestión de Despacho:** Los cocineros marcan los platos como "Listos".
-
-### 📊 5. Módulo de Gerencia
-* **Dashboard Ejecutivo:** Métricas clave (Ventas del día, Usuarios activos).
-* **Reportes:** Exportación de historial de ventas a Excel (CSV).
-* **Gestión de Personal:** Alta y baja de empleados con borrado lógico (desactivación).
+Este repositorio utiliza una arquitectura **Monorepo** que separa el Backend (Django REST API) del Frontend Móvil (Flutter), con un entorno completamente automatizado en **Docker**.
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## 📁 Estructura del Proyecto
 
-* **Backend:** Python, Django 5.
-* **Base de Datos:** PostgreSQL.
-* **Frontend:** HTML5, CSS3, JavaScript (Vanilla).
-* **Interactividad:** HTMX (para búsquedas y actualizaciones parciales).
-* **Librerías Clave:** `django-jazzmin` (Admin), `django-axes` (Seguridad), `psycopg2` (Postgres).
+```text
+Restaurante-Software/
+├── backend/                  # API REST en Django + PostgreSQL
+│   ├── app/                  # Aplicaciones del dominio (pedidos, caja, inventario, etc.)
+│   ├── restaurante/          # Configuración principal de Django (settings, urls, wsgi)
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── Dockerfile            # Construcción de imagen de Python 3.11
+│   └── entrypoint.sh         # Script de arranque (espera BD + migraciones automáticas)
+├── frontend/                 # Proyecto Móvil en Flutter (Clean Architecture)
+│   ├── lib/
+│   │   ├── core/             # Servicios API, temas y utilidades globales
+│   │   ├── features/         # Módulos de la app (auth, pedidos, inventario, etc.)
+│   │   └── main.dart
+│   └── pubspec.yaml
+├── docker-compose.yml        # Orquestación de la API y la Base de Datos PostgreSQL
+└── README.md
+```
 
 ---
 
-## ⚙️ Guía de Instalación (Para Desarrolladores)
+## 🚀 Guía de Inicio Rápido (Para Desarrolladores)
 
-Sigue estos pasos para levantar el proyecto en tu máquina local.
+### Prerrequisitos
+- **Docker Desktop** instalado y activo.
 
-### 1. Requisitos Previos
-* Tener instalado **Python 3.10+**.
-* Tener instalado **PostgreSQL** y **pgAdmin 4**.
-* Tener instalado **Git**.
+### 1. Levantar el proyecto con un solo comando
+Clona el repositorio e inicia los servicios:
 
-### 2. Clonar el Repositorio
 ```bash
-git clone [https://github.com/jordanrevelo214-creator/Restaurante-Software.git](https://github.com/jordanrevelo214-creator/Restaurante-Software.git)
-cd Restaurante-Software
+docker compose up --build
+```
 
-cambio minimo en read.md 
+Esto realizará de forma automática:
+1. Contrucción del contenedor del backend en Python 3.11.
+2. Inicialización del servidor **PostgreSQL 15** en el puerto `5432`.
+3. Verificación de disponibilidad de la Base de Datos.
+4. Ejecución automática de todas las migraciones pendientes (`python manage.py migrate`).
+5. Inicio del servidor del Backend Django en `http://localhost:8000`.
+
+---
+
+## 🔗 Endpoints de la API REST
+
+| Servicio | URL | Descripción |
+| :--- | :--- | :--- |
+| **API Docs (Swagger UI)** | `http://localhost:8000/api/v1/docs/` | Documentación interactiva OpenAPI |
+| **JWT Token (Login)** | `POST http://localhost:8000/api/v1/token/` | Obtener Access & Refresh Token |
+| **JWT Refresh Token** | `POST http://localhost:8000/api/v1/token/refresh/` | Renovar Access Token |
+| **Panel de Admin** | `http://localhost:8000/admin/` | Panel administrativo de Django |
+
+---
+
+## 🔑 Crear Superusuario Administrador
+
+Para acceder al panel de Django Admin o probar endpoints restringidos:
+
+```bash
+docker compose exec web python manage.py createsuperuser
+```
