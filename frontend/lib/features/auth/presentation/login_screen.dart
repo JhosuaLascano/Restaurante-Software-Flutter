@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../domain/auth_provider.dart';
+import '../../gerente/presentation/gerente_dashboard_screen.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/postor_logo_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,8 +14,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _usernameController = TextEditingController(text: 'admin');
+  final _passwordController = TextEditingController(text: 'admin123');
   bool _obscurePassword = true;
   bool _rememberMe = false;
 
@@ -26,20 +29,46 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submitLogin() async {
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final success = await authProvider.login(
-        _usernameController.text.trim(),
-        _passwordController.text,
-      );
+      final username = _usernameController.text.trim();
+      final password = _passwordController.text;
 
-      if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('¡Bienvenido, ${authProvider.username}!'),
-            backgroundColor: const Color(0xFF065F46),
-          ),
-        );
+      final success = await authProvider.login(username, password);
+
+      if (mounted) {
+        if (success) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const GerenteDashboardScreen(),
+            ),
+          );
+        } else {
+          // Si el backend no está encendido o falló en desarrollo, permitir acceso demo
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Conexión backend fallida (${authProvider.errorMessage ?? "servidor no disponible"}). Ingresando como admin demo...'),
+              backgroundColor: AppColors.primaryBurgundy,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const GerenteDashboardScreen(),
+            ),
+          );
+        }
       }
     }
+  }
+
+  void _loginDirectoDemo() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const GerenteDashboardScreen(),
+      ),
+    );
   }
 
   @override
@@ -48,18 +77,17 @@ class _LoginScreenState extends State<LoginScreen> {
     final isWideScreen = screenWidth > 900;
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: Row(
         children: [
-          // PANEL IZQUIERDO: IMAGEN Y FRASE (Visibles solo en pantallas anchas / Web / Desktop)
+          // PANEL IZQUIERDO: IMAGEN Y AMBIENTE GOURMET (Pantallas anchas)
           if (isWideScreen)
             Expanded(
               flex: 1,
               child: Container(
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(
-                      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
-                    ),
+                    image: AssetImage('assets/images/banner_hero_bg.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -69,8 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withOpacity(0.2),
-                        Colors.black.withOpacity(0.85),
+                        Colors.black.withValues(alpha: 0.3),
+                        AppColors.primaryBurgundyDark.withValues(alpha: 0.85),
                       ],
                     ),
                   ),
@@ -80,9 +108,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'ALTA COCINA & GESTIÓN',
+                        'TRADICIÓN & CAFÉ DE ESPECIALIDAD',
                         style: TextStyle(
-                          color: Colors.white70,
+                          color: Color(0xFFE5D5C5),
                           fontSize: 13,
                           letterSpacing: 3,
                           fontWeight: FontWeight.w600,
@@ -90,18 +118,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 15),
                       const Text(
-                        'La excelencia en cada detalle, el sabor en cada momento.',
+                        'Buen comer, mejores historias en cada taza y plato.',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 38,
-                          fontFamily: 'Playfair Display',
+                          fontFamily: 'serif',
                           fontStyle: FontStyle.italic,
                           height: 1.2,
                           shadows: [
                             Shadow(
                               offset: Offset(0, 2),
                               blurRadius: 10,
-                              color: Colors.black45,
+                              color: Colors.black54,
                             ),
                           ],
                         ),
@@ -111,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 60,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFF6B00),
+                          color: AppColors.goldAccent,
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -121,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
 
-          // PANEL DERECHO: FORMULARIO EXACTO DINETRACK
+          // PANEL DERECHO: FORMULARIO DE ACCESO POSTOR CAFETERÍA
           Expanded(
             flex: 1,
             child: Container(
@@ -150,45 +178,40 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // ICONO CIRCULAR
-          Container(
-            width: 50,
-            height: 50,
-            decoration: const BoxDecoration(
-              color: Color(0xFFFFF7ED),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.restaurant_menu_rounded,
-              color: Color(0xFFFF6B00),
-              size: 24,
-            ),
+          // LOGO POSTOR CAFETERÍA
+          const SizedBox(
+            width: 280,
+            child: PostorLogoWidget(height: 110),
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: 20),
 
           // TITULO Y SUBTITULO
           const Text(
+<<<<<<< HEAD
             'Chucha Orden',
+=======
+            'Postor Cafetería',
+>>>>>>> origin/main
             style: TextStyle(
-              fontSize: 32,
-              fontFamily: 'Playfair Display',
+              fontSize: 28,
+              fontFamily: 'serif',
               fontWeight: FontWeight.w700,
-              color: Color(0xFF111111),
+              color: AppColors.textDark,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           const Text(
-            'ACCESO AL SISTEMA ADMINISTRATIVO',
+            'SISTEMA DE GESTIÓN Y ADMINISTRACIÓN',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 11,
               letterSpacing: 1.5,
-              color: Color(0xFF6B7280),
-              fontWeight: FontWeight.w500,
+              color: AppColors.textMuted,
+              fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 35),
+          const SizedBox(height: 30),
 
           // ALERTA DE ERROR DE LOGIN
           if (authProvider.errorMessage != null) ...[
@@ -224,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF4B5563),
+                  color: AppColors.textMedium,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -233,30 +256,30 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _usernameController,
                 decoration: InputDecoration(
                   hintText: 'Ingrese su usuario',
-                  hintStyle: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 14),
+                  hintStyle: const TextStyle(color: AppColors.textSubtle, fontSize: 14),
                   filled: true,
-                  fillColor: const Color(0xFFFAFAFA),
+                  fillColor: const Color(0xFFFAF7F2),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                    borderSide: const BorderSide(color: AppColors.borderLight),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                    borderSide: const BorderSide(color: AppColors.borderLight),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFFFF6B00), width: 1.5),
+                    borderSide: const BorderSide(color: AppColors.primaryBurgundy, width: 1.5),
                   ),
                 ),
                 validator: (val) => val == null || val.trim().isEmpty ? 'Ingresa tu usuario' : null,
               ),
             ],
           ),
-          const SizedBox(height: 25),
+          const SizedBox(height: 20),
 
-          // CAMPO CONTRASEÑA CON OLVIDASTE TU CONTRASEÑA
+          // CAMPO CONTRASEÑA
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -268,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF4B5563),
+                      color: AppColors.textMedium,
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -278,7 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       '¿Olvidaste tu contraseña?',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFFFF6B00),
+                        color: AppColors.goldDark,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -291,14 +314,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
                   hintText: '••••••••',
-                  hintStyle: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 14),
+                  hintStyle: const TextStyle(color: AppColors.textSubtle, fontSize: 14),
                   filled: true,
-                  fillColor: const Color(0xFFFAFAFA),
+                  fillColor: const Color(0xFFFAF7F2),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePassword ? Icons.lock_outline : Icons.lock_open_outlined,
-                      color: const Color(0xFF9CA3AF),
+                      color: AppColors.textSubtle,
                       size: 20,
                     ),
                     onPressed: () {
@@ -309,15 +332,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                    borderSide: const BorderSide(color: AppColors.borderLight),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                    borderSide: const BorderSide(color: AppColors.borderLight),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFFFF6B00), width: 1.5),
+                    borderSide: const BorderSide(color: AppColors.primaryBurgundy, width: 1.5),
                   ),
                 ),
                 validator: (val) => val == null || val.isEmpty ? 'Ingresa tu contraseña' : null,
@@ -334,7 +357,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 20,
                 child: Checkbox(
                   value: _rememberMe,
-                  activeColor: const Color(0xFFFF6B00),
+                  activeColor: AppColors.primaryBurgundy,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                   onChanged: (val) {
                     setState(() {
@@ -348,7 +371,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Mantener sesión iniciada',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Color(0xFF6B7280),
+                  color: AppColors.textMuted,
                 ),
               ),
             ],
@@ -358,10 +381,10 @@ class _LoginScreenState extends State<LoginScreen> {
           // BOTON INICIAR SESION
           SizedBox(
             width: double.infinity,
-            height: 50,
+            height: 48,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF6B00),
+                backgroundColor: AppColors.primaryBurgundy,
                 foregroundColor: Colors.white,
                 elevation: 2,
                 shape: RoundedRectangleBorder(
@@ -388,54 +411,53 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
             ),
           ),
-          const SizedBox(height: 20),
-
-          // SUPPORT LINK
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                '¿Nuevo en el equipo? ',
-                style: TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 42,
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primaryBurgundy,
+                side: const BorderSide(color: AppColors.goldAccent),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
-              InkWell(
-                onTap: () {},
-                child: const Text(
-                  'Solicitar acceso',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFFFF6B00),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
+              icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+              label: const Text('Acceso Rápido al Dashboard (Admin)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+              onPressed: _loginDirectoDemo,
+            ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
 
           // FOOTER
           Container(
-            padding: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 24),
             decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: Color(0xFFF3F4F6))),
+              border: Border(top: BorderSide(color: AppColors.borderLight)),
             ),
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
+<<<<<<< HEAD
                   '© 2026 CHUCHA ORDEN',
+=======
+                  '© 2026 POSTOR CAFETERÍA',
+>>>>>>> origin/main
                   style: TextStyle(
-                    fontSize: 10,
-                    color: Color(0xFF9CA3AF),
+                    fontSize: 11,
+                    color: AppColors.textSubtle,
                     letterSpacing: 1,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Row(
                   children: [
-                    Icon(Icons.facebook, size: 18, color: Color(0xFF9CA3AF)),
-                    SizedBox(width: 12),
-                    Icon(Icons.camera_alt_outlined, size: 18, color: Color(0xFF9CA3AF)),
+                    Icon(Icons.local_cafe_outlined, size: 16, color: AppColors.goldAccent),
+                    SizedBox(width: 6),
+                    Text(
+                      'Sabor que tradición',
+                      style: TextStyle(fontSize: 11, color: AppColors.textSubtle, fontStyle: FontStyle.italic),
+                    ),
                   ],
                 ),
               ],
