@@ -4,20 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Bloqueado</title>
-    <link rel="stylesheet" href="{% static 'usuarios/css/login.css' %}">
+    <title>Acceso bloqueado - Chucha Orden</title>
+    <link rel="stylesheet" href="{% static 'usuarios/css/login.css' %}?v=3.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .lockout-box { text-align: center; }
+        .lockout-box {
+            text-align: center;
+        }
+
         #countdown-timer {
-            font-size: 2em;
-            font-weight: bold;
-            color: #f28500;
-            margin: 20px 0;
-            padding: 10px;
-            border: 2px solid #f28500;
-            border-radius: 8px;
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 10px 0 30px;
+            padding: 12px 32px;
+            border: 1px solid #FED7AA;
+            background: #FFF7ED;
+            border-radius: 12px;
             display: inline-block;
         }
+
+        .lockout-text {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
         /* El botón de regreso estará oculto por defecto */
         #try-again-message {
             display: none;
@@ -25,18 +37,40 @@
     </style>
 </head>
 <body>
-    <div class="login-container lockout-box">
-        <div class="login-header">
-            <h1>Acceso Bloqueado</h1>
-            <p>Has excedido el número máximo de intentos de inicio de sesión.</p>
-        </div>
-        <p>Podrás intentarlo de nuevo en:</p>
 
-        <div id="countdown-timer" data-duration="{{ cooloff_time.seconds|default:900 }}">--:--</div>
-        
-        <div id="try-again-message">
-            <p style="font-weight: bold; margin-top: 20px;">¡Ya puedes intentarlo de nuevo!</p>
-            <a href="{% url 'usuarios:login' %}" class="btn-primary" style="text-decoration: none; display: inline-block; margin-top: 10px;">Regresar al Login</a>
+    <div class="split-screen">
+        <div class="left-pane">
+            <div class="overlay-text">
+                <span class="subtitle-overlay">ALTA COCINA & GESTIÓN</span>
+                <h2>Las buenas cosas toman su tiempo.</h2>
+                <div class="line-accent"></div>
+            </div>
+        </div>
+
+        <div class="right-pane">
+            <div class="login-container lockout-box">
+
+                <div class="brand-header">
+                    <div class="icon-circle"><i class="fas fa-user-lock"></i></div>
+                    <h1>Acceso bloqueado</h1>
+                    <p class="subtitle">Demasiados intentos de inicio de sesión</p>
+                </div>
+
+                <p class="lockout-text">Podrás intentarlo de nuevo en:</p>
+
+                <div id="countdown-timer" data-duration="{{ cooloff_time.seconds|default:900 }}">--:--</div>
+
+                <div id="try-again-message">
+                    <p class="lockout-text">¡Ya puedes intentarlo de nuevo!</p>
+                    <a href="{% url 'usuarios:login' %}" class="btn-primary" style="text-decoration: none;">
+                        Regresar al login <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="footer-copy">
+                    <span>&copy; 2026 CHUCHA ORDEN</span>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -1,7 +1,7 @@
 {% extends 'usuarios/base_gerente.html' %}
 {% load static %}
 
-{% block title %}Personal - El Rincón que No Conoces{% endblock %}
+{% block title %}Personal - Chucha Orden{% endblock %}
 
 {% block active_personal %}active{% endblock %}
 
@@ -9,7 +9,7 @@
 <header>
     <h2>Gestión de Usuarios</h2>
     <a href="{% url 'usuarios:crear_usuario' %}" class="btn-confirmar"
-        style="width: auto; margin: 0; background: #FF5722; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px;">
+        style="width: auto; margin: 0; background: #FF6B00; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px;">
         + Nuevo Usuario
     </a>
 </header>
@@ -69,7 +69,7 @@
                 </td>
                 <td>
                     <a href="{% url 'usuarios:editar_usuario' u.id %}"
-                        style="color: #f28500; font-weight: bold; text-decoration: none;">
+                        style="color: #FF6B00; font-weight: bold; text-decoration: none;">
                         Editar
                     </a>
                 </td>

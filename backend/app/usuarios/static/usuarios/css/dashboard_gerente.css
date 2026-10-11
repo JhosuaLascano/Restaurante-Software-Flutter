@@ -1,14 +1,14 @@
 :root {
-    --primary-color: #f28500;
+    --primary-color: #FF6B00;
     /* Naranja de la marca */
-    --bg-color: #f4f7fe;
-    --text-dark: #2b3674;
-    --text-gray: #a3aed0;
+    --bg-color: #FAF7F2;
+    --text-dark: #1F2937;
+    --text-gray: #6B7280;
 }
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Outfit', sans-serif;
     background-color: var(--bg-color);
     display: flex;
     height: 100vh;
@@ -17,6 +17,7 @@ body {
 
 /* --- SIDEBAR --- */
 .sidebar {
+    position: relative;
     width: 280px;
     background-color: white;
     display: flex;
@@ -111,7 +112,7 @@ header h2 {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: #f4f7fe;
+    background-color: #FAF7F2;
     display: flex;
     justify-content: center;
     align-items: center;

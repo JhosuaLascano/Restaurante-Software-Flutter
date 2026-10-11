@@ -1,4 +1,5 @@
 {% extends 'usuarios/base_gerente.html' %}
+{% load static %}
 {% load custom_filters %}
 
 {% block content %}
@@ -178,7 +179,7 @@
 <style>
     /* Header Styles */
     .report-header {
-        background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+        background: linear-gradient(to right, rgba(20, 20, 20, 0.92), rgba(20, 20, 20, 0.65)), url("{% static 'usuarios/imagenes/login_split_bg.png' %}") center 40% / cover;
         color: white;
         padding: 30px;
         border-radius: 16px;
@@ -189,7 +190,8 @@
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
-    .header-content h1 {
+    .main-content .header-content h1 {
+        color: #FFFFFF !important;
         font-size: 1.8rem;
         margin: 0 0 5px 0;
         font-weight: 800;

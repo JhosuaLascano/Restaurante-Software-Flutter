@@ -1,7 +1,7 @@
 {% extends 'usuarios/base_gerente.html' %}
 {% load static %}
 
-{% block title %}Reportes - El Rincón{% endblock %}
+{% block title %}Reportes - Chucha Orden{% endblock %}
 
 {% block active_reportes %}active{% endblock %}
 
@@ -11,10 +11,10 @@
     /* Override/Custom Styles for Report Page */
     :root {
         /* Inherited from base but kept for specific elements if needed */
-        --primary: #FF5722;
-        --primary-dark: #E64A19;
+        --primary: #FF6B00;
+        --primary-dark: #E65100;
         --secondary: #1F2937;
-        --bg-light: #FFF5F2;
+        --bg-light: #FAF7F2;
         --white: #ffffff;
         --text-gray: #6B7280;
         --border-color: #E5E7EB;
@@ -411,10 +411,10 @@
                             label: 'Ingresos ($)',
                             data: data,
                             backgroundColor: 'rgba(255, 87, 34, 0.1)',
-                            borderColor: '#FF5722',
+                            borderColor: '#FF6B00',
                             borderWidth: 3,
                             pointBackgroundColor: '#fff',
-                            pointBorderColor: '#FF5722',
+                            pointBorderColor: '#FF6B00',
                             pointBorderWidth: 2,
                             pointRadius: 4,
                             hoverRadius: 6,
@@ -429,8 +429,8 @@
                             legend: { display: false },
                             tooltip: {
                                 backgroundColor: '#1F2937',
-                                titleFont: { family: 'DM Sans', size: 14 },
-                                bodyFont: { family: 'DM Sans', size: 14 },
+                                titleFont: { family: 'Outfit', size: 14 },
+                                bodyFont: { family: 'Outfit', size: 14 },
                                 padding: 12,
                                 cornerRadius: 8,
                                 callbacks: {
@@ -442,11 +442,11 @@
                             y: {
                                 beginAtZero: true,
                                 grid: { borderDash: [5, 5], color: '#F3F4F6' },
-                                ticks: { font: { family: 'DM Sans' }, color: '#9CA3AF' }
+                                ticks: { font: { family: 'Outfit' }, color: '#9CA3AF' }
                             },
                             x: {
                                 grid: { display: false },
-                                ticks: { font: { family: 'DM Sans' }, color: '#9CA3AF' }
+                                ticks: { font: { family: 'Outfit' }, color: '#9CA3AF' }
                             }
                         }
                     }
