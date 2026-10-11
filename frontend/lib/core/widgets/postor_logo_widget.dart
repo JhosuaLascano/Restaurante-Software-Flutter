@@ -63,7 +63,7 @@ class PostorLogoWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 const Text(
-                  'Postor Cafetería',
+                  'Chucha Orden',
                   style: TextStyle(
                     fontFamily: 'serif',
                     fontSize: 20,

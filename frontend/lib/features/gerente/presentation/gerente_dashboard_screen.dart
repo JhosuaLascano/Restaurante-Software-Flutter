@@ -530,7 +530,7 @@ class _GerenteDashboardScreenState extends State<GerenteDashboardScreen> {
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 12.0),
           child: Text(
-            'Postor Cafetería v1.0.0',
+            'Chucha Orden v1.0.0',
             style: TextStyle(fontSize: 11, color: AppColors.textSubtle),
           ),
         ),
@@ -1307,7 +1307,7 @@ class _GerenteDashboardScreenState extends State<GerenteDashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Promociones Activas - Postor Cafetería',
+            'Promociones Activas - Chucha Orden',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textDark),
           ),
           const SizedBox(height: 16),
@@ -1375,7 +1375,7 @@ class _GerenteDashboardScreenState extends State<GerenteDashboardScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Postor Cafetería · Sabor que tradición',
+            'Chucha Orden · Sabor que tradición',
             style: TextStyle(fontSize: 12, color: AppColors.textSubtle),
           ),
           Text(

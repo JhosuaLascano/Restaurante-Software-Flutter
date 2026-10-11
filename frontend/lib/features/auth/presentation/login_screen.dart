@@ -187,11 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // TITULO Y SUBTITULO
           const Text(
-<<<<<<< HEAD
             'Chucha Orden',
-=======
-            'Postor Cafetería',
->>>>>>> origin/main
             style: TextStyle(
               fontSize: 28,
               fontFamily: 'serif',
@@ -438,11 +434,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-<<<<<<< HEAD
                   '© 2026 CHUCHA ORDEN',
-=======
-                  '© 2026 POSTOR CAFETERÍA',
->>>>>>> origin/main
                   style: TextStyle(
                     fontSize: 11,
                     color: AppColors.textSubtle,
