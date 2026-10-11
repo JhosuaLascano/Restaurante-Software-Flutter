@@ -1,0 +1,361 @@
+/* =========================================
+   TEMA GLOBAL - "Chucha Orden"
+   Misma identidad visual que el login:
+   naranja #FF6B00, Outfit + Playfair Display,
+   panel oscuro con la foto del restaurante.
+   Se carga en todas las páginas internas.
+   ========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+:root {
+    --brand: #FF6B00;
+    --brand-hover: #E65100;
+    --brand-soft: #FFF7ED;
+    --brand-border: #FED7AA;
+    --ink: #1F2937;
+    --ink-strong: #111111;
+    --muted: #6B7280;
+    --page-bg: #FAF7F2;
+    --sidebar-bg: #141414;
+    --font-sans: 'Outfit', sans-serif;
+    --font-serif: 'Playfair Display', serif;
+
+    /* Alias usados por las plantillas existentes */
+    --primary: var(--brand);
+    --primary-color: var(--brand);
+    --primary-hover: var(--brand-hover);
+    --orange-primary: var(--brand);
+    --orange-hover: var(--brand-hover);
+    --secondary-color: #FF9A4D;
+    --text-color: var(--ink);
+    --text-dark: var(--ink);
+    --text-muted: var(--muted);
+    --text-gray: var(--muted);
+    --text-light: var(--muted);
+    --bg-light: var(--page-bg);
+    --bg-color: var(--page-bg);
+    --bg-body: var(--page-bg);
+    --hostal-primary: var(--brand);
+    --hostal-light: var(--brand-soft);
+    --hostal-bg: var(--page-bg);
+    --info-gradient: linear-gradient(135deg, #FF6B00 0%, #FF9A4D 100%);
+}
+
+body {
+    font-family: var(--font-sans) !important;
+    background-color: var(--page-bg) !important;
+    color: var(--ink);
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+/* --- TÍTULOS DE PÁGINA EN SERIF (como el login) --- */
+.main-content h1,
+.main-content > header h2,
+.main-content > h2,
+h1.page-title,
+.page-title h1,
+.premium-title {
+    font-family: var(--font-serif) !important;
+    font-weight: 600 !important;
+    color: var(--ink-strong) !important;
+    letter-spacing: 0 !important;
+}
+
+/* Línea naranja bajo el título principal */
+.main-content > header h2::after,
+.main-content > header h1::after,
+h1.page-title::after,
+.page-title h1::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 3px;
+    margin-top: 10px;
+    background: var(--brand);
+    border-radius: 2px;
+}
+
+/* Etiqueta pequeña en mayúsculas (estilo "ACCESO AL SISTEMA") */
+.eyebrow {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 6px;
+}
+
+/* --- FORMULARIOS --- */
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--brand) !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.12) !important;
+}
+
+/* --- BOTONES PRINCIPALES --- */
+.btn-primary,
+.btn-gradient,
+.btn-submit,
+.btn-primary-hostal {
+    background: var(--brand) !important;
+    border-color: var(--brand) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 6px -1px rgba(255, 107, 0, 0.2);
+    transition: 0.2s;
+}
+
+.btn-primary:hover,
+.btn-gradient:hover,
+.btn-submit:hover,
+.btn-primary-hostal:hover {
+    background: var(--brand-hover) !important;
+    border-color: var(--brand-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(255, 107, 0, 0.3);
+}
+
+.btn-outline-hostal {
+    color: var(--brand) !important;
+    border-color: var(--brand) !important;
+}
+
+.btn-outline-hostal:hover {
+    background: var(--brand-soft) !important;
+}
+
+/* Bootstrap: links y paginación con el color de marca */
+.text-primary {
+    color: var(--brand) !important;
+}
+
+.bg-primary {
+    background-color: var(--brand) !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--brand);
+    border-color: var(--brand);
+}
+
+/* =========================================
+   SIDEBAR OSCURO (Gerencia, Caja, Hostal)
+   Evoca el panel con foto del login
+   ========================================= */
+.sidebar {
+    /* La posición la define cada base (Gerencia: relative, Hostal: fixed) */
+    background: var(--sidebar-bg) !important;
+    color: #FFFFFF;
+    border-right: none !important;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08) !important;
+    isolation: isolate;
+}
+
+.sidebar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(to bottom, rgba(20, 20, 20, 0.82), rgba(20, 20, 20, 0.97) 55%),
+        url('../imagenes/login_split_bg.png') center / cover no-repeat;
+    pointer-events: none;
+}
+
+/* Logo / marca */
+.sidebar .logo,
+.sidebar .brand {
+    font-family: var(--font-serif) !important;
+    font-weight: 600 !important;
+    font-size: 1.35rem !important;
+    color: #FFFFFF !important;
+    line-height: 1.2;
+    text-decoration: none;
+}
+
+.sidebar .logo i,
+.sidebar .brand-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+    background: var(--brand-soft) !important;
+    color: var(--brand) !important;
+    font-size: 1rem !important;
+}
+
+/* Enlaces de navegación */
+.sidebar .nav-links a,
+.sidebar .nav-item {
+    color: rgba(255, 255, 255, 0.65) !important;
+    background: transparent !important;
+    border-right: none !important;
+    border-left: 3px solid transparent;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+}
+
+.sidebar .nav-links a i,
+.sidebar .nav-item i {
+    color: rgba(255, 255, 255, 0.45);
+    transition: 0.2s;
+}
+
+.sidebar .nav-links a:hover,
+.sidebar .nav-item:hover {
+    color: #FFFFFF !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.sidebar .nav-links a.active,
+.sidebar .nav-item.active {
+    color: #FFFFFF !important;
+    background: rgba(255, 107, 0, 0.16) !important;
+    border-left-color: var(--brand);
+    font-weight: 600 !important;
+}
+
+.sidebar .nav-links a:hover i,
+.sidebar .nav-links a.active i,
+.sidebar .nav-item:hover i,
+.sidebar .nav-item.active i {
+    color: var(--brand);
+}
+
+/* Botones inferiores (cambio de módulo y salir) */
+.sidebar .btn-hostal-switch,
+.sidebar .btn-restaurant {
+    color: #FFFFFF !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 8px !important;
+}
+
+.sidebar .btn-hostal-switch i,
+.sidebar .btn-restaurant i {
+    color: var(--brand) !important;
+}
+
+.sidebar .btn-hostal-switch:hover,
+.sidebar .btn-restaurant:hover {
+    background: var(--brand) !important;
+    border-color: var(--brand) !important;
+}
+
+.sidebar .btn-hostal-switch:hover i,
+.sidebar .btn-restaurant:hover i {
+    color: #FFFFFF !important;
+}
+
+.sidebar .logout-btn,
+.sidebar .logout-link {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.sidebar .logout-btn:hover,
+.sidebar .logout-link:hover {
+    color: #FCA5A5 !important;
+    background: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Barra de desplazamiento discreta */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+}
+
+/* --- TARJETAS: acento suave de marca --- */
+.stat-icon {
+    background-color: var(--brand-soft) !important;
+    color: var(--brand) !important;
+}
+
+/* --- TABLAS --- */
+th {
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* =========================================
+   BARRAS SUPERIORES (Mesero, POS de mesa)
+   ========================================= */
+.navbar,
+.top-navbar {
+    position: relative;
+    background: var(--sidebar-bg) !important;
+    color: #FFFFFF !important;
+    border-bottom: none !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    isolation: isolate;
+}
+
+.navbar::before,
+.top-navbar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(to right, rgba(20, 20, 20, 0.95), rgba(20, 20, 20, 0.7)),
+        url('../imagenes/login_split_bg.png') center 40% / cover no-repeat;
+    pointer-events: none;
+}
+
+.navbar .brand {
+    font-family: var(--font-serif) !important;
+    font-weight: 600 !important;
+    color: #FFFFFF !important;
+}
+
+.navbar .brand i {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-size: 0.95rem;
+}
+
+.top-navbar a {
+    color: #FFFFFF !important;
+}
+
+.top-navbar strong {
+    color: var(--brand);
+}
+
+/* Pastillas dentro de la barra oscura */
+.navbar .user-pill,
+.navbar > a:not(.brand) {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #FFFFFF !important;
+}
+
+.navbar .user-pill a {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.navbar .user-pill a:hover {
+    color: #FCA5A5 !important;
+}

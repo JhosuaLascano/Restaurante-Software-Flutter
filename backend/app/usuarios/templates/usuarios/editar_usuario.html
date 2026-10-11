@@ -4,7 +4,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Editar Usuario - El Rincón</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario - Chucha Orden</title>
     <link rel="stylesheet" href="{% static 'usuarios/css/dashboard_gerente.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -69,11 +70,12 @@
             padding: 0;
         }
     </style>
+    <link rel="stylesheet" href="{% static 'usuarios/css/tema.css' %}?v=1.0">
 </head>
 
 <body>
     <nav class="sidebar">
-        <div class="logo"><i class="fas fa-utensils"></i> El Rincón...</div>
+        <div class="logo"><i class="fas fa-utensils"></i> <span>Chucha Orden</span></div>
         <div class="nav-links">
             <a href="{% url 'usuarios:dashboard_gerente' %}"><i class="fas fa-home"></i> Dashboard</a>
             <a href="{% url 'usuarios:gestion_menu' %}"><i class="fas fa-hamburger"></i> Menú</a>

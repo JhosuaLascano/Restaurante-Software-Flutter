@@ -4,8 +4,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Gerencia - DineTrack{% endblock %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&display=swap"
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gerencia - Chucha Orden{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="{% static 'usuarios/css/dashboard_gerente.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -15,25 +16,25 @@
     <style>
         :root {
             /* TOMATO/RED PALETTE GLOBAL */
-            --primary-color: #FF5722;
+            --primary-color: #FF6B00;
             /* Deep Orange */
-            --secondary-color: #FF8A65;
+            --secondary-color: #FF9A4D;
             /* Light Salmon */
-            --text-color: #2B3674;
-            --text-muted: #A3AED0;
-            --bg-light: #FFF5F2;
+            --text-color: #1F2937;
+            --text-muted: #6B7280;
+            --bg-light: #FAF7F2;
             /* Very light reddish/warm bg instead of cream */
             --card-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
 
             --success-gradient: linear-gradient(135deg, #059669 0%, #34D399 100%);
             --danger-gradient: linear-gradient(135deg, #E11D48 0%, #FB7185 100%);
-            --info-gradient: linear-gradient(135deg, #FF6347 0%, #FF4500 100%);
+            --info-gradient: linear-gradient(135deg, #FF6B00 0%, #FF6B00 100%);
             /* Tomato -> OrangeRed */
             --warning-gradient: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%);
         }
 
         body {
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Outfit', sans-serif;
             background-color: var(--bg-light) !important;
             color: var(--text-color);
         }
@@ -95,13 +96,14 @@
         }
 
         .btn-hostal-switch:hover {
-            background-color: #E0E7FF;
+            background-color: #FFF7ED;
             /* Indigo suave */
-            color: #4338CA;
+            color: #E65100;
             /* Indigo oscuro */
-            border-color: #C7D2FE;
+            border-color: #FED7AA;
         }
     </style>
+    <link rel="stylesheet" href="{% static 'usuarios/css/tema.css' %}?v=1.0">
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -109,7 +111,7 @@
 
     <nav class="sidebar">
         <div class="logo">
-            <i class="fas fa-utensils"></i> El Rincon...
+            <i class="fas fa-utensils"></i> <span>Chucha Orden</span>
         </div>
         <div class="nav-links">
             <!-- LINKS EXCLUSIVOS ADMINISTRACION -->

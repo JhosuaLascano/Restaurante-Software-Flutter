@@ -168,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // TITULO Y SUBTITULO
           const Text(
-            'El rincón que no conoces',
+            'Chucha Orden',
             style: TextStyle(
               fontSize: 32,
               fontFamily: 'Playfair Display',
@@ -423,7 +423,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '© 2026 EL RINCÓN QUE NO CONOCES',
+                  '© 2026 CHUCHA ORDEN',
                   style: TextStyle(
                     fontSize: 10,
                     color: Color(0xFF9CA3AF),

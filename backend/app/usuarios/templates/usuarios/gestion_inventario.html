@@ -1,7 +1,7 @@
 {% extends 'usuarios/base_gerente.html' %}
 {% load static %}
 
-{% block title %}Inventario - El Rincón que No Conoces{% endblock %}
+{% block title %}Inventario - Chucha Orden{% endblock %}
 
 {% block active_inventario %}active{% endblock %}
 
@@ -72,7 +72,7 @@
                 <td class="text-center">
                     {% if i.es_subreceta %}
                     <span
-                        style="background: #e0e7ff; color: #4318ff; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 0.75rem;">BATCH/RECETA</span>
+                        style="background: #FFF7ED; color: #FF6B00; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 0.75rem;">BATCH/RECETA</span>
                     {% else %}
                     <span style="color: #a0aec0; font-size: 0.8rem;">Insumo</span>
                     {% endif %}
@@ -82,7 +82,7 @@
                 {% if i.stock_actual <= i.stock_minimo %} <td
                     style="font-weight: bold; font-size: 1.1em; color: #c62828;">
                     {% else %}
-                    <td style="font-weight: bold; font-size: 1.1em; color: #2b3674;">
+                    <td style="font-weight: bold; font-size: 1.1em; color: #1F2937;">
                         {% endif %}
                         {{ i.stock_actual|floatformat:0 }}
                     </td>
@@ -103,16 +103,16 @@
                     <td>
                         <button hx-get="{% url 'inventario:editar_insumo' i.id %}" hx-target="#modal-container"
                             hx-swap="innerHTML" class="edit-btn"
-                            style="background: transparent; border: none; color: #f28500; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 5px;">
+                            style="background: transparent; border: none; color: #FF6B00; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 5px;">
                             <button hx-get="{% url 'inventario:editar_insumo' i.id %}" hx-target="#modal-container"
                                 hx-swap="innerHTML" class="edit-btn"
-                                style="background: transparent; border: none; color: #f28500; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 5px;">
+                                style="background: transparent; border: none; color: #FF6B00; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 5px;">
                                 <i class="fas fa-edit"></i>
                             </button>
                             {% if i.es_subreceta %}
                             <button hx-get="{% url 'pedidos:gestion_receta_insumo' i.id %}" hx-target="#modal-container"
                                 hx-swap="innerHTML" class="edit-btn"
-                                style="background: transparent; border: none; color: #4318ff; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 5px;"
+                                style="background: transparent; border: none; color: #FF6B00; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 5px;"
                                 title="Gestionar Ingredientes de la Sub-receta">
                                 <i class="fas fa-scroll"></i>
                             </button>

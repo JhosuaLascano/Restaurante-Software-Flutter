@@ -194,7 +194,7 @@ JAZZMIN_SETTINGS = {
     "site_header": "Restaurante App",
     "site_brand": "Restaurante App",
     "welcome_sign": "Bienvenido al Panel de Control",
-    "copyright": "El Rincón que No Conoces",
+    "copyright": "Chucha Orden",
     
     # Menú lateral
     "search_model": ["usuarios.Usuario", "pedidos.Pedido"],
@@ -312,7 +312,7 @@ SIMPLE_JWT = {
 
 # Configuración de Documentación Swagger/OpenAPI
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'API Restaurante - El Rincón que No Conoces',
+    'TITLE': 'API Restaurante - Chucha Orden',
     'DESCRIPTION': 'Documentación de endpoints para la aplicación móvil Flutter',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,

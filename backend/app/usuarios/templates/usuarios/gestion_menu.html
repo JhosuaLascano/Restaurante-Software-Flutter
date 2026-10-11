@@ -1,7 +1,7 @@
 {% extends 'usuarios/base_gerente.html' %}
 {% load static %}
 
-{% block title %}Menú - El Rincón que No Conoces{% endblock %}
+{% block title %}Menú - Chucha Orden{% endblock %}
 
 {% block active_menu %}active{% endblock %}
 
@@ -24,7 +24,7 @@
     <h2>Gestión del Menú</h2>
     <button hx-get="{% url 'pedidos:crear_producto' %}" hx-target="#modal-container" hx-swap="innerHTML"
         class="btn-confirmar"
-        style="width: auto; margin: 0; background: #FF5722; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 1rem;">
+        style="width: auto; margin: 0; background: #FF6B00; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 1rem;">
         + Nuevo Plato
     </button>
 </header>
@@ -63,7 +63,7 @@
                 <td>
                     <button hx-get="{% url 'pedidos:editar_producto' p.id %}" hx-target="#modal-container"
                         hx-swap="innerHTML" class="edit-btn"
-                        style="background: transparent; border: none; color: #f28500; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 10px;">
+                        style="background: transparent; border: none; color: #FF6B00; font-weight: bold; cursor: pointer; font-size: 1rem; margin-right: 10px;">
                         <i class="fas fa-edit"></i> Editar
                     </button>
                     <button hx-get="{% url 'pedidos:gestion_receta' p.id %}" hx-target="#modal-container"

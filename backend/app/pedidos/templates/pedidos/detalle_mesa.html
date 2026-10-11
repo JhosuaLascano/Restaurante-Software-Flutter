@@ -17,7 +17,7 @@
     #pos-modal-content .main-container {
         height: 100%;
         overflow: hidden;
-        background: #F3F4F6;
+        background: #FAF7F2;
         padding: 20px;
     }
 
@@ -365,7 +365,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POS - Mesa {{ mesa.numero }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
     <!-- Estilos originales... -->
@@ -380,7 +380,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
             background-color: var(--bg-body);
             margin: 0;
             height: 100vh;
@@ -412,6 +412,7 @@
         /* ... resto de estilos ... */
         /* Incluir los mismos estilos que en el bloque HTMX */
     </style>
+    <link rel="stylesheet" href="{% static 'usuarios/css/tema.css' %}?v=1.0">
 </head>
 
 <body>
